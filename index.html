@@ -27,7 +27,6 @@
   }
   .wrap{max-width:820px;margin:0 auto;padding:44px 32px 100px;}
 
-  /* ---- HUB ---- */
   .hub-header{ text-align:center; margin-bottom:8px; }
   .hub-header h1{
     font-family: 'Poppins', sans-serif;
@@ -53,30 +52,12 @@
   .cat-desc{ font-size:17px; color:var(--text-dim); line-height:1.45; margin:0; }
   .cat-right{ text-align:right; flex-shrink:0; }
 
-  /* ---- ICON ROWS (orbs + hearts) ---- */
-  .icon-row{
-    display:flex;
-    gap:9px;
-    justify-content:flex-end;
-  }
+  .icon-row{ display:flex; gap:9px; justify-content:flex-end; }
   .icon-row.orbs{ margin-bottom:9px; }
-  .icon-slot{
-    width:30px; height:30px;
-    display:flex; align-items:center; justify-content:center;
-    flex-shrink:0;
-  }
-  .icon-slot .dot{
-    width:30px; height:30px;
-    border-radius:50%;
-    border:3px solid var(--accent);
-    box-sizing:border-box;
-  }
-  .icon-slot .heart{
-    width:30px; height:30px;
-    display:block;
-  }
+  .icon-slot{ width:30px; height:30px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .icon-slot .dot{ width:30px; height:30px; border-radius:50%; border:3px solid var(--accent); box-sizing:border-box; }
+  .icon-slot .heart{ width:30px; height:30px; display:block; }
 
-  /* ---- OVERLAY / GAME SCREENS ---- */
   .overlay{ position:fixed; inset:0; background:var(--bg); display:none; overflow-y:auto; z-index:50; }
   .overlay.active{ display:block; }
   .game-wrap{ max-width:820px; margin:0 auto; padding:32px 28px 100px; }
@@ -96,7 +77,6 @@
   }
   .rules-box b{ color:var(--text); font-family: 'Poppins', sans-serif; }
 
-  /* fill-in-blank */
   .fill-row{ margin-bottom:24px; }
   .fill-clue{ font-size:19px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
   .fill-input-line{ display:flex; gap:10px; }
@@ -107,22 +87,17 @@
   .fill-input-line input:focus{ outline:none; border-color:var(--accent); }
   .fill-row.correct .fill-input-line input{ border-color:var(--green); background:#12251a; }
   .fill-row.wrongflash .fill-input-line input{ border-color:#c0392b; }
+  .fill-row.revealed .fill-input-line input{ border-color:var(--panel-line); background:var(--panel); color:var(--text-dim); font-style:italic; }
   .fill-submit{
     background:var(--panel); border:1.5px solid var(--panel-line); color:var(--text);
     width:50px; border-radius:8px; cursor:pointer; font-size:19px;
   }
   .fill-submit:hover{ border-color:var(--accent); }
+  .fill-submit:disabled{ opacity:0.4; cursor:default; }
 
-  /* inline orbs (next to questions / log) */
-  .inline-orbs{
-    display:inline-flex; gap:6px; vertical-align:middle;
-  }
-  .inline-orbs .dot{
-    width:24px; height:24px;
-    border-radius:50%; border:2.5px solid var(--accent); box-sizing:border-box;
-  }
+  .inline-orbs{ display:inline-flex; gap:6px; vertical-align:middle; }
+  .inline-orbs .dot{ width:24px; height:24px; border-radius:50%; border:2.5px solid var(--accent); box-sizing:border-box; }
 
-  /* two-bank matching */
   .bank-label{ font-size:14px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-dim); margin:20px 0 10px; font-weight:600; }
   .bank{ display:flex; flex-wrap:wrap; gap:11px; margin-bottom:6px; }
   .chip{
@@ -140,21 +115,18 @@
     padding:13px 18px; border-radius:22px; font-size:16px; min-width:120px; text-align:center;
     border:1.5px solid var(--panel-line); color:var(--text-dim); font-family: 'Inter', sans-serif;
   }
-  .center-slot.filled{
-    border-color:var(--accent); background:var(--panel); color:var(--text); font-weight:700; cursor:pointer;
-  }
+  .center-slot.filled{ border-color:var(--accent); background:var(--panel); color:var(--text); font-weight:700; cursor:pointer; }
   .center-connector{ color:var(--text-dim); font-size:16px; }
 
   .img-chip{
-    width:100px; border:2px solid var(--panel-line); border-radius:10px; overflow:hidden; cursor:pointer;
+    width:100px; height:80px; border:2px solid var(--panel-line); border-radius:10px; overflow:hidden; cursor:pointer;
     background:var(--panel);
   }
   .img-chip:hover{ border-color:var(--accent); }
-  .img-chip svg{ display:block; width:100%; height:70px; }
-  .center-slot.img-slot{ padding:8px; min-width:100px; }
-  .center-slot.img-slot svg{ width:80px; height:56px; display:block; margin:0 auto; }
+  .img-chip img{ display:block; width:100%; height:100%; object-fit:cover; }
+  .center-slot.img-slot{ padding:6px; min-width:100px; }
+  .center-slot.img-slot img{ width:90px; height:66px; display:block; margin:0 auto; object-fit:cover; border-radius:6px; }
 
-  /* guess log */
   .log-title{
     font-size:14px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-dim);
     margin:32px 0 12px; font-weight:600;
@@ -165,30 +137,23 @@
     padding:14px 0; border-bottom:1px solid var(--panel-line); font-size:16px;
   }
   .log-entry.wrong span.logtext{ text-decoration:line-through; color:var(--text-dim); }
+  .log-entry.revealed span.logtext{ color:var(--text-dim); font-style:italic; }
   .log-content{ display:flex; flex-direction:column; gap:4px; flex:1; }
   .logtext{ display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; }
   .logsub{ font-size:14px; color:var(--text-dim); }
   .log-right{ display:flex; align-items:center; gap:12px; flex-shrink:0; }
   .log-orbs{ display:flex; gap:6px; }
-  .log-orbs .dot{
-    width:20px; height:20px;
-    border-radius:50%; border:2px solid var(--accent); box-sizing:border-box;
-  }
+  .log-orbs .dot{ width:20px; height:20px; border-radius:50%; border:2px solid var(--accent); box-sizing:border-box; }
   .log-entry .badge{ font-size:20px; flex-shrink:0; }
-  .log-flag{
-    width:30px; height:30px;
-    border-radius:4px;
-    display:inline-block;
-    flex-shrink:0;
-  }
+  .log-flag{ width:34px; height:34px; border-radius:4px; display:inline-block; flex-shrink:0; object-fit:cover; }
 
-  /* categorize - all at once */
   .cat-item-row{
     background:var(--panel); border:1.5px solid var(--panel-line); border-radius:12px;
     padding:18px; margin-bottom:16px;
   }
   .cat-item-row.correct{ border-color:var(--green); background:#12251a; }
   .cat-item-row.failed{ opacity:0.35; border-color:var(--panel-line); background:var(--bg); }
+  .cat-item-row.revealed{ border-color:var(--panel-line); background:var(--panel); opacity:0.8; }
   .cat-item-name{
     font-family: 'Poppins', sans-serif; font-size:19px; font-weight:600; margin-bottom:14px;
     display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -206,11 +171,21 @@
   .cat-btn .more b{ color:var(--text); }
   .cat-item-row.correct .cat-btn{ opacity:0.4; }
   .cat-item-row.failed .cat-btn{ opacity:0.4; cursor:default; pointer-events:none; }
+  .cat-item-row.revealed .cat-btn{ opacity:0.4; cursor:default; pointer-events:none; }
 
   .done-banner{
     text-align:center; padding:36px 20px; color:var(--accent);
     font-size:20px; font-weight:700; font-family: 'Poppins', sans-serif;
   }
+
+  .reveal-btn{
+    display:block; width:100%; margin:36px 0 20px;
+    background:var(--panel); border:1.5px solid var(--panel-line); color:var(--text-dim);
+    padding:16px; border-radius:10px; cursor:pointer; font-size:16px;
+    font-family:'Poppins', sans-serif; font-weight:600; letter-spacing:0.03em;
+  }
+  .reveal-btn:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
+  .reveal-btn:disabled{ opacity:0.5; cursor:default; }
 </style>
 </head>
 <body>
@@ -224,154 +199,151 @@
 <div id="overlays"></div>
 
 <script>
-/* ============ DATA ============ */
+const IMG_BASE = 'https://panquak.github.io/DailyOrbs/';
 
 const CATS = [
   {
-    key:'orange', color:'var(--orange)', name:'Triples',
-    desc:'Find the word with three of the same letter.',
+    key:'orange', color:'var(--orange)', name:'Triple Letters',
+    desc:'Find the word whose letter appears three times.',
     type:'fill',
     thresholds:[3,6,9],
     total:10,
-    instructions:'Each answer contains a letter that appears exactly three times. Type the word that fits the clue.',
+    instructions:'Each answer contains a letter that appears exactly three times. Type the word that fits each clue.',
     items:[
-      {clue:'Often accompanying bedtime', answers:['lullaby']},
-      {clue:'Peelable yellow fruit', answers:['banana']},
-      {clue:'Soapy sphere that floats', answers:['bubble']},
-      {clue:'Achieving a goal', answers:['success']},
+      {clue:'Nuclear wasteland survivor', answers:['cockroach']},
+      {clue:'Ride catcher', answers:['hitchhiker']},
+      {clue:'Bedtime soother', answers:['lullaby']},
+      {clue:'Gun recoil', answers:['kickback']},
+      {clue:'Opium flower', answers:['poppy']},
+      {clue:'Underwater eyewear', answers:['goggles']},
+      {clue:'Ancient elephant', answers:['mammoth']},
+      {clue:'Bandage horror', answers:['mummy']},
+      {clue:'Soapy sphere', answers:['bubble']},
       {clue:'Very young dog', answers:['puppy']},
-      {clue:'Tracks finances for a business', answers:['bookkeeper']},
-      {clue:'Lines that never meet', answers:['parallel']},
-      {clue:'Soft, light fuzz', answers:['fluff']},
-      {clue:'Wrapped Egyptian body', answers:['mummy']},
-      {clue:'Familiar name for a father', answers:['daddy']},
     ]
   },
   {
-    key:'green', color:'var(--green)', name:'Subspecies',
-    desc:'Pair each modifier with the animal it names.',
+    key:'green', color:'var(--green)', name:'Root Faction Vocabulary',
+    desc:'Match each faction in Root to a word on its board.',
     type:'cross-match',
-    thresholds:[2,5,8],
+    thresholds:[3,6,9],
     total:10,
-    instructions:'Tap a modifier, then tap the animal it goes with — tap either again to deselect before it locks in.',
-    connector:'·',
-    leftLabel:'Modifier',
-    rightLabel:'Animal',
+    instructions:'Each faction in the board game Root has a distinctive word printed on its player board. Match the board word (top) to its faction (bottom).',
+    connector:'-',
+    leftLabel:'Board word',
+    rightLabel:'Faction',
     leftBank:[
-      {id:'africangrey', label:'African grey'},
-      {id:'reticulated', label:'Reticulated'},
-      {id:'tiger', label:'Tiger'},
-      {id:'polar', label:'Polar'},
-      {id:'snow', label:'Snow'},
-      {id:'blue', label:'Blue'},
-      {id:'king', label:'King'},
-      {id:'emperor', label:'Emperor'},
-      {id:'monarch', label:'Monarch'},
-      {id:'giant', label:'Giant'},
+      {id:'h3', label:'Relationship'},
+      {id:'h10', label:'Crown'},
+      {id:'h7', label:'Land'},
+      {id:'h1', label:'Hospital'},
+      {id:'h8', label:'Anoint'},
+      {id:'h4', label:'Sale'},
+      {id:'h2', label:'Martial'},
+      {id:'h9', label:'Resolve'},
+      {id:'h5', label:'Lost'},
+      {id:'h6', label:'Exposure'},
     ],
     rightBank:[
-      {id:'africangrey', label:'Parrot', origin:'African grey parrot'},
-      {id:'reticulated', label:'Python', origin:'Reticulated python'},
-      {id:'tiger', label:'Salamander', origin:'Tiger salamander'},
-      {id:'polar', label:'Bear', origin:'Polar bear'},
-      {id:'snow', label:'Leopard', origin:'Snow leopard'},
-      {id:'blue', label:'Whale', origin:'Blue whale'},
-      {id:'king', label:'Cobra', origin:'King cobra'},
-      {id:'emperor', label:'Penguin', origin:'Emperor penguin'},
-      {id:'monarch', label:'Butterfly', origin:'Monarch butterfly'},
-      {id:'giant', label:'Panda', origin:'Giant panda'},
+      {id:'h7', label:'Badgers'},
+      {id:'h9', label:'Birds'},
+      {id:'h1', label:'Cats'},
+      {id:'h10', label:'Moles'},
+      {id:'h4', label:'Otters'},
+      {id:'h8', label:'Rats'},
+      {id:'h2', label:'Woodland'},
+      {id:'h6', label:'Crows'},
+      {id:'h5', label:'Lizards'},
+      {id:'h3', label:'Vagabond'},
     ]
   },
   {
-    key:'blue', color:'var(--blue)', name:'Tree Identification',
-    desc:'Match each tree name to its illustration.',
+    key:'blue', color:'var(--blue)', name:'National Dishes',
+    desc:'Match each country to its national dish.',
     type:'cross-match',
-    thresholds:[2,5,8],
+    thresholds:[3,6,9],
     total:10,
-    instructions:'Tap a tree name, then tap the illustration that matches it — tap either again to deselect before it locks in.',
-    connector:'↔',
-    leftLabel:'Tree',
-    rightLabel:'Illustration',
+    instructions:'Tap a country, then tap the dish that belongs to it. Tap either again to deselect before it locks in.',
+    connector:'=',
+    leftLabel:'Country',
+    rightLabel:'Dish',
     rightIsImage:true,
     leftBank:[
-      {id:'oak', label:'Oak'},
-      {id:'pine', label:'Pine'},
-      {id:'maple', label:'Maple'},
-      {id:'palm', label:'Palm'},
-      {id:'birch', label:'Birch'},
-      {id:'willow', label:'Willow'},
-      {id:'baobab', label:'Baobab'},
-      {id:'cypress', label:'Cypress'},
-      {id:'redwood', label:'Redwood'},
-      {id:'cherry', label:'Cherry Blossom'},
+      {id:'italy', label:'Italy'},
+      {id:'vietnam', label:'Vietnam'},
+      {id:'austria', label:'Austria'},
+      {id:'bosnia', label:'Bosnia'},
+      {id:'thailand', label:'Thailand'},
+      {id:'spain', label:'Spain'},
+      {id:'lebanon', label:'Lebanon'},
+      {id:'russia', label:'Russia'},
+      {id:'uzbekistan', label:'Uzbekistan'},
+      {id:'slovakia', label:'Slovakia'},
     ],
     rightBank:[
-      {id:'oak', svg:'<rect width="100" height="100" fill="#1a2a1a"/><rect x="44" y="60" width="12" height="35" fill="#5a3a1a"/><circle cx="50" cy="42" r="28" fill="#3d6b35"/><circle cx="32" cy="55" r="18" fill="#3d6b35"/><circle cx="68" cy="55" r="18" fill="#3d6b35"/>'},
-      {id:'pine', svg:'<rect width="100" height="100" fill="#1a2a1a"/><rect x="44" y="75" width="12" height="20" fill="#5a3a1a"/><polygon points="50,8 28,40 72,40" fill="#2d5a2d"/><polygon points="50,28 22,60 78,60" fill="#2d5a2d"/><polygon points="50,48 16,80 84,80" fill="#2d5a2d"/>'},
-      {id:'maple', svg:'<rect width="100" height="100" fill="#1a2a1a"/><rect x="44" y="65" width="12" height="30" fill="#5a3a1a"/><path d="M50 12 L56 32 L72 26 L64 44 L80 52 L60 56 L62 72 L50 62 L38 72 L40 56 L20 52 L36 44 L28 26 L44 32 Z" fill="#c94a1a"/>'},
-      {id:'palm', svg:'<rect width="100" height="100" fill="#1a2a1a"/><path d="M46 95 Q50 65 54 32" stroke="#5a3a1a" stroke-width="6" fill="none"/><path d="M54 32 Q30 28 18 42" stroke="#2d7a2d" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M54 32 Q78 28 90 42" stroke="#2d7a2d" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M54 32 Q40 14 28 8" stroke="#2d7a2d" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M54 32 Q68 14 80 8" stroke="#2d7a2d" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M54 32 Q54 10 54 4" stroke="#2d7a2d" stroke-width="5" fill="none" stroke-linecap="round"/>'},
-      {id:'birch', svg:'<rect width="100" height="100" fill="#1a2a1a"/><circle cx="50" cy="32" r="26" fill="#4a7a3d"/><rect x="44" y="50" width="12" height="45" fill="#e8e0d0"/><rect x="46" y="56" width="8" height="3" fill="#1a1a1a"/><rect x="45" y="66" width="10" height="3" fill="#1a1a1a"/><rect x="47" y="76" width="7" height="3" fill="#1a1a1a"/><rect x="45" y="86" width="9" height="3" fill="#1a1a1a"/>'},
-      {id:'willow', svg:'<rect width="100" height="100" fill="#1a2a1a"/><rect x="45" y="38" width="10" height="57" fill="#5a3a1a"/><ellipse cx="50" cy="32" rx="28" ry="12" fill="#5a8a4a"/><path d="M25 40 Q18 60 15 78" stroke="#5a8a4a" stroke-width="3" fill="none"/><path d="M35 42 Q30 62 28 82" stroke="#5a8a4a" stroke-width="3" fill="none"/><path d="M50 44 Q50 64 50 84" stroke="#5a8a4a" stroke-width="3" fill="none"/><path d="M65 42 Q70 62 72 82" stroke="#5a8a4a" stroke-width="3" fill="none"/><path d="M75 40 Q82 60 85 78" stroke="#5a8a4a" stroke-width="3" fill="none"/>'},
-      {id:'baobab', svg:'<rect width="100" height="100" fill="#1a2a1a"/><path d="M32 95 Q30 55 40 42 L60 42 Q70 55 68 95 Z" fill="#7a5a3a"/><ellipse cx="50" cy="38" rx="38" ry="10" fill="#3d6b35"/><ellipse cx="50" cy="28" rx="24" ry="6" fill="#3d6b35"/>'},
-      {id:'cypress', svg:'<rect width="100" height="100" fill="#1a2a1a"/><rect x="47" y="85" width="6" height="12" fill="#5a3a1a"/><ellipse cx="50" cy="48" rx="14" ry="42" fill="#2d5a2d"/>'},
-      {id:'redwood', svg:'<rect width="100" height="100" fill="#1a2a1a"/><rect x="46" y="85" width="8" height="12" fill="#5a3a1a"/><polygon points="50,4 30,40 70,40" fill="#2d5a2d"/><polygon points="50,26 24,62 76,62" fill="#2d5a2d"/><polygon points="50,48 18,84 82,84" fill="#2d5a2d"/>'},
-      {id:'cherry', svg:'<rect width="100" height="100" fill="#1a2a1a"/><rect x="44" y="58" width="12" height="38" fill="#5a3a1a"/><circle cx="50" cy="42" r="24" fill="#e8a0b8"/><circle cx="30" cy="52" r="14" fill="#e8a0b8"/><circle cx="70" cy="52" r="14" fill="#e8a0b8"/><circle cx="40" cy="28" r="11" fill="#f0c0d0"/><circle cx="60" cy="28" r="11" fill="#f0c0d0"/>'},
+      {id:'spain', img:'dish1.png'},
+      {id:'slovakia', img:'dish2.png'},
+      {id:'bosnia', img:'dish3.png'},
+      {id:'russia', img:'dish4.png'},
+      {id:'austria', img:'dish5.png'},
+      {id:'italy', img:'dish6.png'},
+      {id:'uzbekistan', img:'dish7.png'},
+      {id:'vietnam', img:'dish8.png'},
+      {id:'lebanon', img:'dish9.png'},
+      {id:'thailand', img:'dish10.png'},
     ]
   },
   {
-    key:'purple', color:'var(--purple)', name:'Digit Count',
-    desc:'Sort each animal by its number of digits per limb.',
+    key:'purple', color:'var(--purple)', name:'UW-Madison Majors',
+    desc:'Sort majors by the skew of their gender ratio.',
     type:'categorize',
     thresholds:[2,5,8],
     total:10,
-    instructions:'Count the digits (fingers/toes) on a single limb. Sort each animal into the correct bucket. Wrong guesses lock the item out.',
+    instructions:'Sort each UW-Madison major by how skewed its gender ratio is, in either direction. The buckets refer to the ratio of one gender to the other, whether female-skewed or male-skewed. Wrong guesses lock the item out.',
     fields:[
-      {key:'gt5', label:'>5', emoji:'🖐️'},
-      {key:'five', label:'5', emoji:'✋'},
-      {key:'lt5', label:'<5', emoji:'👆'},
+      {key:'lt1_5', label:'&lt;1.5', emoji:'BAL'},
+      {key:'mid', label:'2-4', emoji:'MID'},
+      {key:'gt5', label:'&gt;5', emoji:'SKEW'},
     ],
-    fieldTotals:{gt5:3, five:4, lt5:3},
+    fieldTotals:{lt1_5:3, mid:3, gt5:4},
     items:[
-      {name:'Human', field:'five'},
-      {name:'Dog', field:'five'},
-      {name:'Cat', field:'five'},
-      {name:'Monkey', field:'five'},
-      {name:'Giant Panda', field:'gt5'},
-      {name:'Acanthostega', field:'gt5'},
-      {name:'Ichthyostega', field:'gt5'},
-      {name:'Horse', field:'lt5'},
-      {name:'Cow', field:'lt5'},
-      {name:'Eagle', field:'lt5'},
+      {name:'Nursing', field:'gt5'},
+      {name:'Applied Math, Engineering and Physics', field:'gt5'},
+      {name:'Physics PhD', field:'mid'},
+      {name:'Chemistry BS', field:'lt1_5'},
+      {name:'BME BS', field:'lt1_5'},
+      {name:'Kinesiology BS', field:'mid'},
+      {name:'Data Science BS', field:'mid'},
+      {name:'Gender and Women\u2019s Studies Cert', field:'gt5'},
+      {name:'Undecided', field:'lt1_5'},
+      {name:'Human Development and Family Studies', field:'gt5'},
     ]
   },
 ];
 
-/* ============ STATE ============ */
 const state = {};
 CATS.forEach(c=>{ state[c.key] = { orbs:0, lives:3, correct:0 }; });
-
-/* ============ ORB & HEART RENDERING ============ */
 
 function dotFill(correct, start, end, color){
   if(correct >= end) return color;
   if(correct > start){
     const pct = ((correct - start) / (end - start)) * 100;
-    return `conic-gradient(${color} ${pct}%, var(--panel) 0)`;
+    return 'conic-gradient(' + color + ' ' + pct + '%, var(--panel) 0)';
   }
   return 'var(--panel)';
 }
 
 function dotsHTML(correct, thresholds, color){
-  return [0,1,2].map(i=>{
+  return [0,1,2].map(function(i){
     const start = i === 0 ? 0 : thresholds[i-1];
     const end = thresholds[i];
     const bg = dotFill(correct, start, end, color);
-    return `<div class="icon-slot"><div class="dot" style="--accent:${color}; background:${bg};"></div></div>`;
+    return '<div class="icon-slot"><div class="dot" style="--accent:' + color + '; background:' + bg + ';"></div></div>';
   }).join('');
 }
 
 function dotsHTMLWithNewFill(correct, thresholds, color, prevCorrect){
-  return [0,1,2].map(i=>{
+  return [0,1,2].map(function(i){
     const start = i === 0 ? 0 : thresholds[i-1];
     const end = thresholds[i];
     const prevPct = Math.max(0, Math.min(100, ((prevCorrect - start) / (end - start)) * 100));
@@ -380,336 +352,386 @@ function dotsHTMLWithNewFill(correct, thresholds, color, prevCorrect){
     if(currPct <= 0){
       bg = 'var(--panel)';
     } else if(prevPct >= currPct){
-      bg = `conic-gradient(${color} 0% ${currPct}%, var(--panel) ${currPct}% 100%)`;
+      bg = 'conic-gradient(' + color + ' 0% ' + currPct + '%, var(--panel) ' + currPct + '% 100%)';
     } else {
-      const trans = `color-mix(in srgb, ${color} 40%, transparent)`;
+      const trans = 'color-mix(in srgb, ' + color + ' 40%, transparent)';
       if(prevPct > 0){
-        bg = `conic-gradient(${color} 0% ${prevPct}%, ${trans} ${prevPct}% ${currPct}%, var(--panel) ${currPct}% 100%)`;
+        bg = 'conic-gradient(' + color + ' 0% ' + prevPct + '%, ' + trans + ' ' + prevPct + '% ' + currPct + '%, var(--panel) ' + currPct + '% 100%)';
       } else {
-        bg = `conic-gradient(${trans} 0% ${currPct}%, var(--panel) ${currPct}% 100%)`;
+        bg = 'conic-gradient(' + trans + ' 0% ' + currPct + '%, var(--panel) ' + currPct + '% 100%)';
       }
     }
-    return `<div class="icon-slot"><div class="dot" style="--accent:${color}; background:${bg};"></div></div>`;
+    return '<div class="icon-slot"><div class="dot" style="--accent:' + color + '; background:' + bg + ';"></div></div>';
   }).join('');
 }
 
 function heartsHTML(lives, color){
-  return [0,1,2].map(i=>{
+  return [0,1,2].map(function(i){
     const filled = i < lives;
-    return `<div class="icon-slot"><svg class="heart" viewBox="1.25 2.25 21.5 20.25" fill="${filled ? color : 'none'}" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>`;
+    return '<div class="icon-slot"><svg class="heart" viewBox="1.25 2.25 21.5 20.25" fill="' + (filled ? color : 'none') + '" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>';
   }).join('');
 }
 
 function badgeHTML(catKey){
-  const c = CATS.find(x=>x.key===catKey);
+  const c = CATS.find(function(x){ return x.key === catKey; });
   const s = state[catKey];
-  return `<div style="text-align:right;">
-    <div class="icon-row orbs">${dotsHTML(s.correct, c.thresholds, c.color)}</div>
-    <div class="icon-row hearts">${heartsHTML(s.lives, c.color)}</div>
-  </div>`;
+  return '<div style="text-align:right;">' +
+    '<div class="icon-row orbs">' + dotsHTML(s.correct, c.thresholds, c.color) + '</div>' +
+    '<div class="icon-row hearts">' + heartsHTML(s.lives, c.color) + '</div>' +
+    '</div>';
 }
 
-/* ============ HUB RENDER ============ */
 function renderHub(){
   document.getElementById('hubDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric', year:'numeric'});
   const rows = document.getElementById('catRows');
-  rows.innerHTML = CATS.map(c=>{
+  rows.innerHTML = CATS.map(function(c){
     const s = state[c.key];
-    return `<div class="cat-row" style="--accent:${c.color}" onclick="openGame('${c.key}')">
-      <div class="cat-left">
-        <p class="cat-name">${c.name}</p>
-        <p class="cat-desc">${c.desc}</p>
-      </div>
-      <div class="cat-right">
-        <div class="icon-row orbs">${dotsHTML(s.correct, c.thresholds, c.color)}</div>
-        <div class="icon-row hearts">${heartsHTML(s.lives, c.color)}</div>
-      </div>
-    </div>`;
+    return '<div class="cat-row" style="--accent:' + c.color + '" onclick="openGame(\'' + c.key + '\')">' +
+      '<div class="cat-left">' +
+        '<p class="cat-name">' + c.name + '</p>' +
+        '<p class="cat-desc">' + c.desc + '</p>' +
+      '</div>' +
+      '<div class="cat-right">' +
+        '<div class="icon-row orbs">' + dotsHTML(s.correct, c.thresholds, c.color) + '</div>' +
+        '<div class="icon-row hearts">' + heartsHTML(s.lives, c.color) + '</div>' +
+      '</div>' +
+    '</div>';
   }).join('');
 }
 
-/* ============ ORB / LIVES LOGIC ============ */
-function registerCorrect(catKey, n=1){
-  const c = CATS.find(x=>x.key===catKey);
+function registerCorrect(catKey, n){
+  n = n || 1;
+  const c = CATS.find(function(x){ return x.key === catKey; });
   const s = state[catKey];
   s.correct += n;
-  s.orbs = c.thresholds.filter(t=>s.correct>=t).length;
+  s.orbs = c.thresholds.filter(function(t){ return s.correct >= t; }).length;
   renderHub();
 }
 function registerWrong(catKey){
   const s = state[catKey];
-  s.lives = Math.max(0, s.lives-1);
+  s.lives = Math.max(0, s.lives - 1);
   renderHub();
 }
 function refreshTopBadge(catKey){
-  const el = document.getElementById('topbadge-'+catKey);
+  const el = document.getElementById('topbadge-' + catKey);
   if(el) el.innerHTML = badgeHTML(catKey);
 }
 
-/* ============ OVERLAY SHELL ============ */
 function openGame(key){
-  let el = document.getElementById('overlay-'+key);
+  let el = document.getElementById('overlay-' + key);
   if(!el){
     el = document.createElement('div');
-    el.className='overlay';
-    el.id='overlay-'+key;
+    el.className = 'overlay';
+    el.id = 'overlay-' + key;
     document.getElementById('overlays').appendChild(el);
     buildGame(key, el);
   }
   el.classList.add('active');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
 function closeGame(key){
-  document.getElementById('overlay-'+key).classList.remove('active');
-  document.body.style.overflow='';
+  document.getElementById('overlay-' + key).classList.remove('active');
+  document.body.style.overflow = '';
 }
 
 function shellHTML(c){
-  return `
-    <div class="game-wrap">
-      <div class="game-top-bar" style="--accent:${c.color}">
-        <div class="game-top-row">
-          <div>
-            <h1 class="game-title">${c.name}</h1>
-            <p class="game-instructions">${c.desc}</p>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
-            <button class="back-link" onclick="closeGame('${c.key}')">← Menu</button>
-            <div id="topbadge-${c.key}">${badgeHTML(c.key)}</div>
-          </div>
-        </div>
-        <div class="rules-box">${c.instructions}</div>
-      </div>
-      <div id="gamebody-${c.key}"></div>
-    </div>
-  `;
+  return '<div class="game-wrap">' +
+    '<div class="game-top-bar" style="--accent:' + c.color + '">' +
+      '<div class="game-top-row">' +
+        '<div>' +
+          '<h1 class="game-title">' + c.name + '</h1>' +
+          '<p class="game-instructions">' + c.desc + '</p>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">' +
+          '<button class="back-link" onclick="closeGame(\'' + c.key + '\')">Menu</button>' +
+          '<div id="topbadge-' + c.key + '">' + badgeHTML(c.key) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rules-box">' + c.instructions + '</div>' +
+    '</div>' +
+    '<div id="gamebody-' + c.key + '"></div>' +
+  '</div>';
 }
 
 function buildGame(key, el){
-  const c = CATS.find(x=>x.key===key);
+  const c = CATS.find(function(x){ return x.key === key; });
   el.innerHTML = shellHTML(c);
-  const body = document.getElementById('gamebody-'+key);
-  if(c.type==='fill') buildFill(c, body);
-  if(c.type==='cross-match') buildCrossMatch(c, body);
-  if(c.type==='categorize') buildCategorize(c, body);
+  const body = document.getElementById('gamebody-' + key);
+  if(c.type === 'fill') buildFill(c, body);
+  if(c.type === 'cross-match') buildCrossMatch(c, body);
+  if(c.type === 'categorize') buildCategorize(c, body);
 }
 
-/* ============ TYPE 1: FILL-IN-BLANK ============ */
 function buildFill(c, body){
-  body.innerHTML = c.items.map((item,i)=>`
-    <div class="fill-row" id="fillrow-${c.key}-${i}">
-      <div class="fill-clue">
-        <span>${item.clue}</span>
-        <div class="inline-orbs" id="inline-orbs-${c.key}-${i}"></div>
-      </div>
-      <div class="fill-input-line">
-        <input type="text" id="fillinput-${c.key}-${i}" autocomplete="off" placeholder="Your answer">
-        <button class="fill-submit" onclick="submitFill('${c.key}',${i})">↵</button>
-      </div>
-    </div>
-  `).join('');
-  c.items.forEach((item,i)=>{
-    document.getElementById(`fillinput-${c.key}-${i}`).addEventListener('keydown', e=>{
-      if(e.key==='Enter') submitFill(c.key, i);
+  const gs = { solved:new Set(), revealed:new Set(), orbHTML:{}, done:false };
+
+  function render(){
+    let html = c.items.map(function(item, i){
+      const isCorrect = gs.solved.has(i);
+      const isRevealed = gs.revealed.has(i);
+      const cls = isCorrect ? 'correct' : (isRevealed ? 'revealed' : '');
+      const val = isRevealed ? item.answers[0] : '';
+      const disabled = isCorrect || isRevealed || gs.done;
+      return '<div class="fill-row ' + cls + '" id="fillrow-' + c.key + '-' + i + '">' +
+        '<div class="fill-clue">' +
+          '<span>' + item.clue + '</span>' +
+          '<div class="inline-orbs">' + (gs.orbHTML[i] || '') + '</div>' +
+        '</div>' +
+        '<div class="fill-input-line">' +
+          '<input type="text" id="fillinput-' + c.key + '-' + i + '" autocomplete="off" placeholder="Your answer" value="' + val + '" ' + (disabled ? 'disabled' : '') + '>' +
+          '<button class="fill-submit" onclick="window.__fill_' + c.key + '.submit(' + i + ')" ' + (disabled ? 'disabled' : '') + '>&#8629;</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    html += '<button class="reveal-btn" onclick="window.__fill_' + c.key + '.reveal()" ' + (gs.done ? 'disabled' : '') + '>' + (gs.done ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
+    body.innerHTML = html;
+
+    c.items.forEach(function(item, i){
+      const input = document.getElementById('fillinput-' + c.key + '-' + i);
+      if(input && !input.disabled){
+        input.addEventListener('keydown', function(e){
+          if(e.key === 'Enter') window['__fill_' + c.key].submit(i);
+        });
+      }
     });
-  });
-}
-
-function submitFill(key, i){
-  const c = CATS.find(x=>x.key===key);
-  const item = c.items[i];
-  const input = document.getElementById(`fillinput-${key}-${i}`);
-  const row = document.getElementById(`fillrow-${key}-${i}`);
-  const val = input.value.trim().toLowerCase().replace(/\s+/g,'');
-  if(row.classList.contains('correct')) return;
-  const ok = item.answers.some(a=>a.toLowerCase().replace(/\s+/g,'')===val);
-  const prevCorrect = state[key].correct;
-  if(ok){
-    row.classList.add('correct');
-    input.disabled = true;
-    registerCorrect(key,1);
-    refreshTopBadge(key);
-    const orbContainer = document.getElementById(`inline-orbs-${key}-${i}`);
-    if(orbContainer){
-      orbContainer.innerHTML = dotsHTMLWithNewFill(state[key].correct, c.thresholds, c.color, prevCorrect);
-    }
-  } else {
-    row.classList.add('wrongflash');
-    registerWrong(key);
-    refreshTopBadge(key);
-    setTimeout(()=>row.classList.remove('wrongflash'),400);
   }
+
+  window['__fill_' + c.key] = {
+    submit: function(i){
+      if(gs.solved.has(i) || gs.revealed.has(i) || gs.done) return;
+      const item = c.items[i];
+      const input = document.getElementById('fillinput-' + c.key + '-' + i);
+      const row = document.getElementById('fillrow-' + c.key + '-' + i);
+      const val = input.value.trim().toLowerCase().replace(/\s+/g, '');
+      const ok = item.answers.some(function(a){ return a.toLowerCase().replace(/\s+/g, '') === val; });
+      const prevCorrect = state[c.key].correct;
+      if(ok){
+        gs.solved.add(i);
+        row.classList.add('correct');
+        input.disabled = true;
+        row.querySelector('.fill-submit').disabled = true;
+        registerCorrect(c.key, 1);
+        refreshTopBadge(c.key);
+        gs.orbHTML[i] = dotsHTMLWithNewFill(state[c.key].correct, c.thresholds, c.color, prevCorrect);
+        row.querySelector('.inline-orbs').innerHTML = gs.orbHTML[i];
+      } else {
+        row.classList.add('wrongflash');
+        registerWrong(c.key);
+        refreshTopBadge(c.key);
+        setTimeout(function(){ row.classList.remove('wrongflash'); }, 400);
+      }
+    },
+    reveal: function(){
+      if(gs.done) return;
+      gs.done = true;
+      c.items.forEach(function(item, i){
+        if(!gs.solved.has(i)) gs.revealed.add(i);
+      });
+      render();
+    }
+  };
+  render();
 }
 
-/* ============ TYPE 2: TWO-BANK MATCHING WITH CENTER SLOTS ============ */
 function buildCrossMatch(c, body){
-  const gs = {
-    leftSel:null, rightSel:null,
-    removedLeft:new Set(), removedRight:new Set(),
-    log:[]
-  };
+  const gs = { leftSel:null, rightSel:null, removedLeft:new Set(), removedRight:new Set(), log:[], revealed:false };
 
   function chipHTML(item, side){
-    if(side==='right' && c.rightIsImage){
-      return `<div class="img-chip" onclick="window.__ccm_${c.key}.pick('right','${item.id}')">
-        <svg viewBox="0 0 100 100">${item.svg}</svg>
-      </div>`;
+    if(side === 'right' && c.rightIsImage){
+      return '<div class="img-chip" onclick="window.__ccm_' + c.key + '.pick(\'right\',\'' + item.id + '\')"><img src="' + IMG_BASE + item.img + '" alt=""></div>';
     }
-    return `<div class="chip" onclick="window.__ccm_${c.key}.pick('${side}','${item.id}')">${item.label}</div>`;
+    return '<div class="chip" onclick="window.__ccm_' + c.key + '.pick(\'' + side + '\',\'' + item.id + '\')">' + item.label + '</div>';
   }
 
   function centerSlotHTML(side){
-    const selId = side==='left' ? gs.leftSel : gs.rightSel;
+    const selId = side === 'left' ? gs.leftSel : gs.rightSel;
     if(!selId){
-      const ph = side==='left' ? c.leftLabel : c.rightLabel;
-      return `<div class="center-slot">${ph}</div>`;
+      const ph = side === 'left' ? c.leftLabel : c.rightLabel;
+      return '<div class="center-slot">' + ph + '</div>';
     }
-    const bank = side==='left' ? c.leftBank : c.rightBank;
-    const item = bank.find(x=>x.id===selId);
-    if(side==='right' && c.rightIsImage){
-      return `<div class="center-slot img-slot filled" onclick="window.__ccm_${c.key}.pick('right','${item.id}')"><svg viewBox="0 0 100 100">${item.svg}</svg></div>`;
+    const bank = side === 'left' ? c.leftBank : c.rightBank;
+    const item = bank.find(function(x){ return x.id === selId; });
+    if(side === 'right' && c.rightIsImage){
+      return '<div class="center-slot img-slot filled" onclick="window.__ccm_' + c.key + '.pick(\'right\',\'' + item.id + '\')"><img src="' + IMG_BASE + item.img + '" alt=""></div>';
     }
-    return `<div class="center-slot filled" onclick="window.__ccm_${c.key}.pick('${side}','${item.id}')">${item.label}</div>`;
+    return '<div class="center-slot filled" onclick="window.__ccm_' + c.key + '.pick(\'' + side + '\',\'' + item.id + '\')">' + item.label + '</div>';
   }
 
   function logEntryHTML(l){
-    return `<div class="log-entry ${l.right?'right':'wrong'}">
-      <div class="log-content">
-        <span class="logtext">
-          ${l.leftText} ${l.connector}
-          ${l.image ? `<svg class="log-flag" viewBox="0 0 100 100">${l.image}</svg>` : l.rightText}
-        </span>
-        ${l.origin ? `<span class="logsub">${l.origin}</span>` : ''}
-      </div>
-      <div class="log-right">
-        <div class="log-orbs">${dotsHTMLWithNewFill(l.correct, l.thresholds, l.color, l.prevCorrect)}</div>
-        ${!l.right ? '<span class="badge">💔</span>' : ''}
-      </div>
-    </div>`;
+    let rightSide = '';
+    if(!l.revealed){
+      rightSide = '<div class="log-orbs">' + dotsHTMLWithNewFill(l.correct, l.thresholds, l.color, l.prevCorrect) + '</div>';
+      if(!l.right) rightSide += '<span class="badge">X</span>';
+    }
+    const rightContent = l.image
+      ? '<img class="log-flag" src="' + IMG_BASE + l.image + '" alt="">'
+      : (l.rightText || '');
+    return '<div class="log-entry ' + (l.right ? 'right' : 'wrong') + ' ' + (l.revealed ? 'revealed' : '') + '">' +
+      '<div class="log-content">' +
+        '<span class="logtext">' + l.leftText + ' ' + l.connector + ' ' + rightContent + '</span>' +
+        (l.origin ? '<span class="logsub">' + l.origin + '</span>' : '') +
+      '</div>' +
+      '<div class="log-right">' + rightSide + '</div>' +
+    '</div>';
   }
 
   function render(){
     const s = state[c.key];
-    body.innerHTML = `
-      <div class="bank-label">${c.leftLabel}</div>
-      <div class="bank" id="leftbank-${c.key}"></div>
-      <div class="center-strip">
-        ${centerSlotHTML('left')}
-        <span class="center-connector">${c.connector}</span>
-        ${centerSlotHTML('right')}
-      </div>
-      <div class="bank-label">${c.rightLabel}</div>
-      <div class="bank" id="rightbank-${c.key}"></div>
-      <div class="log-title">
-        <span>Guess Log</span>
-        <div class="inline-orbs">${dotsHTML(s.correct, c.thresholds, c.color)}</div>
-      </div>
-      <div id="log-${c.key}"></div>
-    `;
-    const lb = document.getElementById(`leftbank-${c.key}`);
-    c.leftBank.forEach(item=>{
-      if(gs.removedLeft.has(item.id) || gs.leftSel===item.id) return;
-      lb.insertAdjacentHTML('beforeend', chipHTML(item,'left'));
+    body.innerHTML = '<div class="bank-label">' + c.leftLabel + '</div>' +
+      '<div class="bank" id="leftbank-' + c.key + '"></div>' +
+      '<div class="center-strip">' +
+        centerSlotHTML('left') +
+        '<span class="center-connector">' + c.connector + '</span>' +
+        centerSlotHTML('right') +
+      '</div>' +
+      '<div class="bank-label">' + c.rightLabel + '</div>' +
+      '<div class="bank" id="rightbank-' + c.key + '"></div>' +
+      '<div class="log-title">' +
+        '<span>Guess Log</span>' +
+        '<div class="inline-orbs">' + dotsHTML(s.correct, c.thresholds, c.color) + '</div>' +
+      '</div>' +
+      '<div id="log-' + c.key + '"></div>' +
+      '<button class="reveal-btn" onclick="window.__ccm_' + c.key + '.reveal()" ' + (gs.revealed ? 'disabled' : '') + '>' + (gs.revealed ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
+
+    const lb = document.getElementById('leftbank-' + c.key);
+    c.leftBank.forEach(function(item){
+      if(gs.removedLeft.has(item.id) || gs.leftSel === item.id) return;
+      lb.insertAdjacentHTML('beforeend', chipHTML(item, 'left'));
     });
-    const rb = document.getElementById(`rightbank-${c.key}`);
-    c.rightBank.forEach(item=>{
-      if(gs.removedRight.has(item.id) || gs.rightSel===item.id) return;
-      rb.insertAdjacentHTML('beforeend', chipHTML(item,'right'));
+    const rb = document.getElementById('rightbank-' + c.key);
+    c.rightBank.forEach(function(item){
+      if(gs.removedRight.has(item.id) || gs.rightSel === item.id) return;
+      rb.insertAdjacentHTML('beforeend', chipHTML(item, 'right'));
     });
-    const logEl = document.getElementById(`log-${c.key}`);
+    const logEl = document.getElementById('log-' + c.key);
     logEl.innerHTML = gs.log.slice().reverse().map(logEntryHTML).join('');
   }
 
   function pick(side, id){
-    if(side==='left'){
-      gs.leftSel = (gs.leftSel===id) ? null : id;
+    if(gs.revealed) return;
+    if(side === 'left'){
+      gs.leftSel = (gs.leftSel === id) ? null : id;
     } else {
-      gs.rightSel = (gs.rightSel===id) ? null : id;
+      gs.rightSel = (gs.rightSel === id) ? null : id;
     }
     if(gs.leftSel && gs.rightSel){
-      const leftItem = c.leftBank.find(x=>x.id===gs.leftSel);
-      const rightItem = c.rightBank.find(x=>x.id===gs.rightSel);
+      const leftItem = c.leftBank.find(function(x){ return x.id === gs.leftSel; });
+      const rightItem = c.rightBank.find(function(x){ return x.id === gs.rightSel; });
       const right = gs.leftSel === gs.rightSel;
       const prevCorrect = state[c.key].correct;
-
       if(right){
         gs.removedLeft.add(gs.leftSel);
         gs.removedRight.add(gs.rightSel);
-        registerCorrect(c.key,1);
+        registerCorrect(c.key, 1);
       } else {
         registerWrong(c.key);
       }
-
       gs.log.push({
         leftText: leftItem.label,
         rightText: c.rightIsImage ? null : rightItem.label,
-        image: c.rightIsImage ? rightItem.svg : null,
+        image: c.rightIsImage ? rightItem.img : null,
         connector: c.connector,
         origin: rightItem.origin || null,
         right: right,
+        revealed: false,
         prevCorrect: prevCorrect,
         correct: state[c.key].correct,
         thresholds: c.thresholds,
         color: c.color
       });
-
-      gs.leftSel = null; gs.rightSel = null;
+      gs.leftSel = null;
+      gs.rightSel = null;
       refreshTopBadge(c.key);
     }
     render();
   }
 
-  window['__ccm_'+c.key] = { pick };
+  function reveal(){
+    if(gs.revealed) return;
+    gs.revealed = true;
+    gs.leftSel = null;
+    gs.rightSel = null;
+    const remaining = c.leftBank.filter(function(l){ return !gs.removedLeft.has(l.id); });
+    remaining.forEach(function(l){
+      const r = c.rightBank.find(function(x){ return x.id === l.id; });
+      gs.removedLeft.add(l.id);
+      gs.removedRight.add(r.id);
+      gs.log.push({
+        leftText: l.label,
+        rightText: c.rightIsImage ? null : r.label,
+        image: c.rightIsImage ? r.img : null,
+        connector: c.connector,
+        origin: r.origin || null,
+        right: true,
+        revealed: true,
+        prevCorrect: state[c.key].correct,
+        correct: state[c.key].correct,
+        thresholds: c.thresholds,
+        color: c.color
+      });
+    });
+    render();
+  }
+
+  window['__ccm_' + c.key] = { pick: pick, reveal: reveal };
   render();
 }
 
-/* ============ TYPE 3: CATEGORIZE — ALL ITEMS AT ONCE ============ */
 function buildCategorize(c, body){
-  const fieldTotals = {...c.fieldTotals};
+  const fieldTotals = Object.assign({}, c.fieldTotals);
   const gs = {
     solved: new Array(c.items.length).fill(false),
     failed: new Array(c.items.length).fill(false),
-    placedCount: Object.fromEntries(c.fields.map(f=>[f.key,0])),
+    revealed: new Array(c.items.length).fill(false),
+    placedCount: {},
     orbHTML: new Array(c.items.length).fill(''),
+    done: false
   };
+  c.fields.forEach(function(f){ gs.placedCount[f.key] = 0; });
 
   function render(){
-    body.innerHTML = c.items.map((item,i)=>{
-      const cls = gs.solved[i] ? 'correct' : (gs.failed[i] ? 'failed' : '');
-      return `<div class="cat-item-row ${cls}" id="catrow-${c.key}-${i}">
-        <div class="cat-item-name">
-          <span>${item.name}</span>
-          <div class="inline-orbs">${gs.orbHTML[i]}</div>
-        </div>
-        <div class="cat-buttons">
-          ${c.fields.map(f=>{
-            const need = fieldTotals[f.key] - gs.placedCount[f.key];
-            const disabled = gs.solved[i] || gs.failed[i];
-            return `<button class="cat-btn" ${disabled?'disabled':''} onclick="window.__ccz_${c.key}.pick(${i},'${f.key}')">
-              <span class="emoji">${f.emoji}</span>
-              <span>${f.label}</span>
-              <span class="more">${need>0?`<b>${need}</b> more`:'complete'}</span>
-            </button>`;
-          }).join('')}
-        </div>
-      </div>`;
+    let html = c.items.map(function(item, i){
+      let cls = '';
+      if(gs.solved[i]) cls = 'correct';
+      else if(gs.failed[i]) cls = 'failed';
+      else if(gs.revealed[i]) cls = 'revealed';
+      const buttons = c.fields.map(function(f){
+        const need = fieldTotals[f.key] - gs.placedCount[f.key];
+        const disabled = gs.solved[i] || gs.failed[i] || gs.revealed[i] || gs.done;
+        const moreText = need > 0 ? '<b>' + need + '</b> more' : 'complete';
+        return '<button class="cat-btn" ' + (disabled ? 'disabled' : '') + ' onclick="window.__ccz_' + c.key + '.pick(' + i + ',\'' + f.key + '\')">' +
+          '<span class="emoji">' + f.emoji + '</span>' +
+          '<span>' + f.label + '</span>' +
+          '<span class="more">' + moreText + '</span>' +
+        '</button>';
+      }).join('');
+      return '<div class="cat-item-row ' + cls + '" id="catrow-' + c.key + '-' + i + '">' +
+        '<div class="cat-item-name">' +
+          '<span>' + item.name + '</span>' +
+          '<div class="inline-orbs">' + gs.orbHTML[i] + '</div>' +
+        '</div>' +
+        '<div class="cat-buttons">' + buttons + '</div>' +
+      '</div>';
     }).join('');
-    const allDone = gs.solved.every((s,i)=>s || gs.failed[i]);
-    if(allDone){
+    html += '<button class="reveal-btn" onclick="window.__ccz_' + c.key + '.reveal()" ' + (gs.done ? 'disabled' : '') + '>' + (gs.done ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
+    body.innerHTML = html;
+
+    const allDone = gs.solved.every(function(s, i){ return s || gs.failed[i] || gs.revealed[i]; });
+    if(allDone && !gs.done){
       const anyFailed = gs.failed.some(Boolean);
-      body.insertAdjacentHTML('afterbegin', `<div class="done-banner">${anyFailed ? 'Puzzle complete (with mistakes)' : 'All items sorted!'}</div>`);
+      body.insertAdjacentHTML('afterbegin', '<div class="done-banner">' + (anyFailed ? 'Puzzle complete (with mistakes)' : 'All items sorted!') + '</div>');
     }
   }
 
-  window['__ccz_'+c.key] = {
-    pick(i, field){
-      if(gs.solved[i] || gs.failed[i]) return;
+  window['__ccz_' + c.key] = {
+    pick: function(i, field){
+      if(gs.solved[i] || gs.failed[i] || gs.revealed[i] || gs.done) return;
       const item = c.items[i];
       const prevCorrect = state[c.key].correct;
       if(item.field === field){
         gs.solved[i] = true;
         gs.placedCount[field]++;
-        registerCorrect(c.key,1);
+        registerCorrect(c.key, 1);
         gs.orbHTML[i] = dotsHTMLWithNewFill(state[c.key].correct, c.thresholds, c.color, prevCorrect);
       } else {
         gs.failed[i] = true;
@@ -717,6 +739,14 @@ function buildCategorize(c, body){
         registerWrong(c.key);
       }
       refreshTopBadge(c.key);
+      render();
+    },
+    reveal: function(){
+      if(gs.done) return;
+      gs.done = true;
+      c.items.forEach(function(item, i){
+        if(!gs.solved[i] && !gs.failed[i]) gs.revealed[i] = true;
+      });
       render();
     }
   };
