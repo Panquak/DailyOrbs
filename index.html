@@ -165,11 +165,19 @@
     display:flex; flex-direction:column; align-items:center; gap:5px; font-family: 'Inter', sans-serif;
   }
   .cat-btn .emoji{ font-size:22px; }
-  .cat-btn:hover{ border-color:var(--accent); }
+  .cat-btn:hover:not(.full):not(:disabled){ border-color:var(--accent); }
   .cat-btn:disabled{ opacity:0.35; cursor:default; }
+  .cat-btn.full{
+    opacity:0.22;
+    cursor:default;
+    pointer-events:none;
+    border-style:dashed;
+  }
+  .cat-btn.full .more{ color:var(--text-dim); font-style:italic; }
   .cat-btn .more{ font-size:12px; color:var(--text-dim); }
   .cat-btn .more b{ color:var(--text); }
   .cat-item-row.correct .cat-btn{ opacity:0.4; }
+  .cat-item-row.correct .cat-btn.full{ opacity:0.22; }
   .cat-item-row.failed .cat-btn{ opacity:0.4; cursor:default; pointer-events:none; }
   .cat-item-row.revealed .cat-btn{ opacity:0.4; cursor:default; pointer-events:none; }
 
@@ -187,7 +195,6 @@
   .reveal-btn:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
   .reveal-btn:disabled{ opacity:0.5; cursor:default; }
 
-  /* mobile tweaks for bigger images */
   @media (max-width: 640px){
     .img-chip{ width:120px; height:100px; }
     .center-slot.img-slot{ min-width:180px; }
@@ -703,11 +710,14 @@ function buildCategorize(c, body){
       if(gs.solved[i]) cls = 'correct';
       else if(gs.failed[i]) cls = 'failed';
       else if(gs.revealed[i]) cls = 'revealed';
+      const rowLocked = gs.solved[i] || gs.failed[i] || gs.revealed[i] || gs.done;
       const buttons = c.fields.map(function(f){
-        const need = fieldTotals[f.key] - gs.placedCount[f.key];
-        const disabled = gs.solved[i] || gs.failed[i] || gs.revealed[i] || gs.done;
-        const moreText = need > 0 ? '<b>' + need + '</b> more' : 'complete';
-        return '<button class="cat-btn" ' + (disabled ? 'disabled' : '') + ' onclick="window.__ccz_' + c.key + '.pick(' + i + ',\'' + f.key + '\')">' +
+        const remaining = fieldTotals[f.key] - gs.placedCount[f.key];
+        const isFull = remaining <= 0;
+        const disabled = rowLocked || isFull;
+        const btnClass = 'cat-btn' + (isFull ? ' full' : '');
+        const moreText = isFull ? 'full' : ('<b>' + remaining + '</b> more');
+        return '<button class="' + btnClass + '" ' + (disabled ? 'disabled' : '') + ' onclick="window.__ccz_' + c.key + '.pick(' + i + ',\'' + f.key + '\')">' +
           '<span class="emoji">' + f.emoji + '</span>' +
           '<span>' + f.label + '</span>' +
           '<span class="more">' + moreText + '</span>' +
@@ -734,6 +744,8 @@ function buildCategorize(c, body){
   window['__ccz_' + c.key] = {
     pick: function(i, field){
       if(gs.solved[i] || gs.failed[i] || gs.revealed[i] || gs.done) return;
+      const remaining = fieldTotals[field] - gs.placedCount[field];
+      if(remaining <= 0) return;
       const item = c.items[i];
       const prevCorrect = state[c.key].correct;
       if(item.field === field){
