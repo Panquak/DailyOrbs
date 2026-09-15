@@ -145,6 +145,10 @@
   .log-orbs{ display:flex; gap:6px; }
   .log-orbs .dot{ width:20px; height:20px; border-radius:50%; border:2px solid var(--accent); box-sizing:border-box; }
   .log-entry .badge{ font-size:20px; flex-shrink:0; }
+  .log-check{
+    font-size:26px; line-height:1; font-weight:700;
+    display:inline-block; flex-shrink:0;
+  }
   .log-flag{ width:56px; height:56px; border-radius:6px; display:inline-block; flex-shrink:0; object-fit:cover; }
 
   .cat-item-row{
@@ -195,7 +199,6 @@
   .reveal-btn:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
   .reveal-btn:disabled{ opacity:0.5; cursor:default; }
 
-  /* ---- SHARE BUTTON ---- */
   .share-btn{
     display:flex; align-items:center; justify-content:center; gap:10px;
     width:100%; margin:40px 0 0;
@@ -207,7 +210,6 @@
   .share-btn:disabled{ opacity:0.4; cursor:default; }
   .share-btn svg{ width:18px; height:18px; }
 
-  /* ---- VICTORY POPUP ---- */
   .victory-overlay{
     position:fixed; inset:0; background:rgba(0,0,0,0.85);
     display:none; align-items:center; justify-content:center;
@@ -303,11 +305,12 @@ const ORB_EMOJI = { orange:'🟠', green:'🟢', blue:'🔵', purple:'🟣' };
 const HEART_EMOJI = { orange:'🧡', green:'💚', blue:'💙', purple:'💜' };
 const ORB_HEX = { orange:'#E0902A', green:'#5FAF4E', blue:'#3E90D0', purple:'#A25D95' };
 
-/* ====== TIMELINE / EVENT LOG ====== */
-const eventLog = [];     // chronological: orbs, hearts, and 🏆
-const orbOrder = [];     // just the orbs in order, for the victory popup
+const eventLog = [];
+const orbOrder = [];
 let trophyAwarded = false;
 let victoryShown = false;
+
+const gameRerender = {};
 
 const CATS = [
   {
@@ -430,7 +433,7 @@ const CATS = [
 ];
 
 const state = {};
-CATS.forEach(c=>{ state[c.key] = { orbs:0, lives:3, correct:0 }; });
+CATS.forEach(c=>{ state[c.key] = { orbs:0, lives:3, correct:0, dead:false }; });
 
 /* ====== EVENT LOGGING ====== */
 function logOrb(catKey){
@@ -495,7 +498,7 @@ function shareResults(){
   }
 }
 
-/* ====== RENDERING ====== */
+/* ====== RENDERING HELPERS ====== */
 function dotFill(correct, start, end, color){
   if(correct >= end) return color;
   if(correct > start){
@@ -505,8 +508,16 @@ function dotFill(correct, start, end, color){
   return 'var(--panel)';
 }
 
-function dotsHTML(correct, thresholds, color){
+/* Dead: earned orbs stay fully colored, unearned orbs (including partial) render gray */
+function dotsHTML(correct, thresholds, color, dead){
+  const earnedCount = thresholds.filter(function(t){ return correct >= t; }).length;
   return [0,1,2].map(function(i){
+    if (i < earnedCount){
+      return '<div class="icon-slot"><div class="dot" style="--accent:' + color + '; background:' + color + ';"></div></div>';
+    }
+    if (dead){
+      return '<div class="icon-slot"><div class="dot" style="--accent:#555; background:var(--bg);"></div></div>';
+    }
     const start = i === 0 ? 0 : thresholds[i-1];
     const end = thresholds[i];
     const bg = dotFill(correct, start, end, color);
@@ -548,7 +559,7 @@ function badgeHTML(catKey){
   const c = CATS.find(function(x){ return x.key === catKey; });
   const s = state[catKey];
   return '<div style="text-align:right;">' +
-    '<div class="icon-row orbs">' + dotsHTML(s.correct, c.thresholds, c.color) + '</div>' +
+    '<div class="icon-row orbs">' + dotsHTML(s.correct, c.thresholds, c.color, s.dead) + '</div>' +
     '<div class="icon-row hearts">' + heartsHTML(s.lives, c.color) + '</div>' +
     '</div>';
 }
@@ -564,7 +575,7 @@ function renderHub(){
         '<p class="cat-desc">' + c.desc + '</p>' +
       '</div>' +
       '<div class="cat-right">' +
-        '<div class="icon-row orbs">' + dotsHTML(s.correct, c.thresholds, c.color) + '</div>' +
+        '<div class="icon-row orbs">' + dotsHTML(s.correct, c.thresholds, c.color, s.dead) + '</div>' +
         '<div class="icon-row hearts">' + heartsHTML(s.lives, c.color) + '</div>' +
       '</div>' +
     '</div>';
@@ -576,6 +587,7 @@ function registerCorrect(catKey, n){
   n = n || 1;
   const c = CATS.find(function(x){ return x.key === catKey; });
   const s = state[catKey];
+  if (s.dead) return;
   const prevOrbs = s.orbs;
   s.correct += n;
   s.orbs = c.thresholds.filter(function(t){ return s.correct >= t; }).length;
@@ -586,9 +598,16 @@ function registerCorrect(catKey, n){
 }
 function registerWrong(catKey){
   const s = state[catKey];
+  if (s.dead) return;
   if (s.lives > 0){
     s.lives--;
     logHeartLoss(catKey);
+    if (s.lives === 0){
+      s.dead = true;
+      setTimeout(function(){
+        if (gameRerender[catKey]) gameRerender[catKey]();
+      }, 450);
+    }
   }
   renderHub();
 }
@@ -654,10 +673,13 @@ function buildFill(c, body){
       const cls = isCorrect ? 'correct' : (isRevealed ? 'revealed' : '');
       const val = isRevealed ? item.answers[0] : '';
       const disabled = isCorrect || isRevealed || gs.done;
+      /* Always show whatever orb HTML was stored at guess time.
+         After death, new correct guesses won't add anything, so nothing new appears. */
+      const orbDisplay = gs.orbHTML[i] || '';
       return '<div class="fill-row ' + cls + '" id="fillrow-' + c.key + '-' + i + '">' +
         '<div class="fill-clue">' +
           '<span>' + item.clue + '</span>' +
-          '<div class="inline-orbs">' + (gs.orbHTML[i] || '') + '</div>' +
+          '<div class="inline-orbs">' + orbDisplay + '</div>' +
         '</div>' +
         '<div class="fill-input-line">' +
           '<input type="text" id="fillinput-' + c.key + '-' + i + '" autocomplete="off" placeholder="Your answer" value="' + val + '" ' + (disabled ? 'disabled' : '') + '>' +
@@ -678,6 +700,8 @@ function buildFill(c, body){
     });
   }
 
+  gameRerender[c.key] = render;
+
   window['__fill_' + c.key] = {
     submit: function(i){
       if(gs.solved.has(i) || gs.revealed.has(i) || gs.done) return;
@@ -686,6 +710,7 @@ function buildFill(c, body){
       const row = document.getElementById('fillrow-' + c.key + '-' + i);
       const val = input.value.trim().toLowerCase().replace(/\s+/g, '');
       const ok = item.answers.some(function(a){ return a.toLowerCase().replace(/\s+/g, '') === val; });
+      const wasDead = state[c.key].dead;
       const prevCorrect = state[c.key].correct;
       if(ok){
         gs.solved.add(i);
@@ -694,8 +719,10 @@ function buildFill(c, body){
         row.querySelector('.fill-submit').disabled = true;
         registerCorrect(c.key, 1);
         refreshTopBadge(c.key);
-        gs.orbHTML[i] = dotsHTMLWithNewFill(state[c.key].correct, c.thresholds, c.color, prevCorrect);
-        row.querySelector('.inline-orbs').innerHTML = gs.orbHTML[i];
+        if (!wasDead){
+          gs.orbHTML[i] = dotsHTMLWithNewFill(state[c.key].correct, c.thresholds, c.color, prevCorrect);
+          row.querySelector('.inline-orbs').innerHTML = gs.orbHTML[i];
+        }
       } else {
         row.classList.add('wrongflash');
         registerWrong(c.key);
@@ -742,9 +769,18 @@ function buildCrossMatch(c, body){
 
   function logEntryHTML(l){
     let rightSide = '';
-    if(!l.revealed){
-      rightSide = '<div class="log-orbs">' + dotsHTMLWithNewFill(l.correct, l.thresholds, l.color, l.prevCorrect) + '</div>';
-      if(!l.right) rightSide += '<span class="badge">X</span>';
+    if (!l.revealed){
+      /* Use the dead state at the time of this specific guess — not the current state. */
+      if (l.wasDead){
+        if (l.right){
+          rightSide = '<span class="log-check" style="color:' + c.color + ';">✓</span>';
+        } else {
+          rightSide = '<span class="badge">X</span>';
+        }
+      } else {
+        rightSide = '<div class="log-orbs">' + dotsHTMLWithNewFill(l.correct, l.thresholds, l.color, l.prevCorrect) + '</div>';
+        if(!l.right) rightSide += '<span class="badge">X</span>';
+      }
     }
     const rightContent = l.image
       ? '<img class="log-flag" src="' + IMG_BASE + l.image + '" alt="">'
@@ -771,7 +807,7 @@ function buildCrossMatch(c, body){
       '<div class="bank" id="rightbank-' + c.key + '"></div>' +
       '<div class="log-title">' +
         '<span>Guess Log</span>' +
-        '<div class="inline-orbs">' + dotsHTML(s.correct, c.thresholds, c.color) + '</div>' +
+        '<div class="inline-orbs">' + dotsHTML(s.correct, c.thresholds, c.color, s.dead) + '</div>' +
       '</div>' +
       '<div id="log-' + c.key + '"></div>' +
       '<button class="reveal-btn" onclick="window.__ccm_' + c.key + '.reveal()" ' + (gs.revealed ? 'disabled' : '') + '>' + (gs.revealed ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
@@ -790,6 +826,8 @@ function buildCrossMatch(c, body){
     logEl.innerHTML = gs.log.slice().reverse().map(logEntryHTML).join('');
   }
 
+  gameRerender[c.key] = render;
+
   function pick(side, id){
     if(gs.revealed) return;
     if(side === 'left'){
@@ -801,6 +839,7 @@ function buildCrossMatch(c, body){
       const leftItem = c.leftBank.find(function(x){ return x.id === gs.leftSel; });
       const rightItem = c.rightBank.find(function(x){ return x.id === gs.rightSel; });
       const right = gs.leftSel === gs.rightSel;
+      const wasDead = state[c.key].dead;
       const prevCorrect = state[c.key].correct;
       if(right){
         gs.removedLeft.add(gs.leftSel);
@@ -817,6 +856,7 @@ function buildCrossMatch(c, body){
         origin: rightItem.origin || null,
         right: right,
         revealed: false,
+        wasDead: wasDead,
         prevCorrect: prevCorrect,
         correct: state[c.key].correct,
         thresholds: c.thresholds,
@@ -847,6 +887,7 @@ function buildCrossMatch(c, body){
         origin: r.origin || null,
         right: true,
         revealed: true,
+        wasDead: state[c.key].dead,
         prevCorrect: state[c.key].correct,
         correct: state[c.key].correct,
         thresholds: c.thresholds,
@@ -892,10 +933,11 @@ function buildCategorize(c, body){
           '<span class="more">' + moreText + '</span>' +
         '</button>';
       }).join('');
+      const orbDisplay = gs.orbHTML[i] || '';
       return '<div class="cat-item-row ' + cls + '" id="catrow-' + c.key + '-' + i + '">' +
         '<div class="cat-item-name">' +
           '<span>' + item.name + '</span>' +
-          '<div class="inline-orbs">' + gs.orbHTML[i] + '</div>' +
+          '<div class="inline-orbs">' + orbDisplay + '</div>' +
         '</div>' +
         '<div class="cat-buttons">' + buttons + '</div>' +
       '</div>';
@@ -910,18 +952,23 @@ function buildCategorize(c, body){
     }
   }
 
+  gameRerender[c.key] = render;
+
   window['__ccz_' + c.key] = {
     pick: function(i, field){
       if(gs.solved[i] || gs.failed[i] || gs.revealed[i] || gs.done) return;
       const remaining = fieldTotals[field] - gs.placedCount[field];
       if(remaining <= 0) return;
       const item = c.items[i];
+      const wasDead = state[c.key].dead;
       const prevCorrect = state[c.key].correct;
       if(item.field === field){
         gs.solved[i] = true;
         gs.placedCount[field]++;
         registerCorrect(c.key, 1);
-        gs.orbHTML[i] = dotsHTMLWithNewFill(state[c.key].correct, c.thresholds, c.color, prevCorrect);
+        if (!wasDead){
+          gs.orbHTML[i] = dotsHTMLWithNewFill(state[c.key].correct, c.thresholds, c.color, prevCorrect);
+        }
       } else {
         gs.failed[i] = true;
         fieldTotals[item.field]--;
