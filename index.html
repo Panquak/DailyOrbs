@@ -195,11 +195,68 @@
   .reveal-btn:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
   .reveal-btn:disabled{ opacity:0.5; cursor:default; }
 
+  /* ---- SHARE BUTTON ---- */
+  .share-btn{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; margin:40px 0 0;
+    background:var(--panel); border:1.5px solid var(--panel-line); color:var(--text);
+    padding:16px; border-radius:10px; cursor:pointer; font-size:16px;
+    font-family:'Poppins', sans-serif; font-weight:600; letter-spacing:0.03em;
+  }
+  .share-btn:hover:not(:disabled){ border-color:var(--orange); color:var(--orange); }
+  .share-btn:disabled{ opacity:0.4; cursor:default; }
+  .share-btn svg{ width:18px; height:18px; }
+
+  /* ---- VICTORY POPUP ---- */
+  .victory-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.85);
+    display:none; align-items:center; justify-content:center;
+    z-index:100; padding:20px;
+  }
+  .victory-overlay.active{ display:flex; }
+  .victory-card{
+    background:var(--panel); border:1px solid var(--panel-line);
+    border-radius:22px; padding:44px 32px 36px; max-width:420px; width:100%;
+    text-align:center; animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn{
+    0%{ transform:scale(0.85); opacity:0; }
+    100%{ transform:scale(1); opacity:1; }
+  }
+  .victory-orbs{
+    display:flex; gap:10px; justify-content:center; margin-bottom:28px; flex-wrap:wrap;
+  }
+  .victory-orbs .vorb{
+    width:38px; height:38px; border-radius:50%;
+  }
+  .victory-card h2{
+    font-family:'Poppins',sans-serif; font-size:40px; font-weight:800;
+    margin:0 0 14px; color:var(--text);
+  }
+  .victory-card p{
+    font-size:19px; color:var(--text); line-height:1.55; margin:0 0 26px;
+    font-family:'Inter',sans-serif;
+  }
+  .trophy-icon{
+    width:86px; height:86px; margin:0 auto 30px; display:block;
+    stroke:var(--text); fill:none; stroke-width:3.2;
+    stroke-linecap:round; stroke-linejoin:round;
+  }
+  .victory-btn{
+    background:var(--bg); border:1.5px solid var(--panel-line); color:var(--text);
+    padding:14px 48px; border-radius:12px; cursor:pointer; font-size:18px;
+    font-family:'Poppins',sans-serif; font-weight:600;
+  }
+  .victory-btn:hover{ border-color:var(--orange); color:var(--orange); }
+
   @media (max-width: 640px){
     .img-chip{ width:120px; height:100px; }
     .center-slot.img-slot{ min-width:180px; }
     .center-slot.img-slot img{ width:164px; height:124px; }
     .log-flag{ width:48px; height:48px; }
+    .victory-card{ padding:36px 24px 28px; }
+    .victory-card h2{ font-size:34px; }
+    .victory-orbs .vorb{ width:32px; height:32px; }
   }
 </style>
 </head>
@@ -209,12 +266,48 @@
   <div class="hub-header"><h1>Daily<span class="o-rainbow">&nbsp;O</span>rbs</h1></div>
   <div class="hub-date" id="hubDate"></div>
   <div id="catRows"></div>
+  <button class="share-btn" id="shareBtn" onclick="shareResults()" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="5" r="3"/>
+      <circle cx="6" cy="12" r="3"/>
+      <circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+    <span>Share Results</span>
+  </button>
 </div>
 
 <div id="overlays"></div>
 
+<div class="victory-overlay" id="victoryOverlay">
+  <div class="victory-card">
+    <div class="victory-orbs" id="victoryOrbs"></div>
+    <h2>Victory</h2>
+    <p id="victoryText">You collected 6 orbs.<br>Congratulations!</p>
+    <svg class="trophy-icon" viewBox="0 0 64 64">
+      <path d="M20 6h24v16c0 7-5 13-12 13s-12-6-12-13V6z"/>
+      <path d="M20 11H12a4 4 0 0 0 0 8h8"/>
+      <path d="M44 11h8a4 4 0 0 1 0 8h-8"/>
+      <path d="M32 35v8"/>
+      <path d="M24 43h16v6H24z"/>
+    </svg>
+    <button class="victory-btn" onclick="dismissVictory()">Yay</button>
+  </div>
+</div>
+
 <script>
 const IMG_BASE = 'https://panquak.github.io/DailyOrbs/';
+
+const ORB_EMOJI = { orange:'🟠', green:'🟢', blue:'🔵', purple:'🟣' };
+const HEART_EMOJI = { orange:'🧡', green:'💚', blue:'💙', purple:'💜' };
+const ORB_HEX = { orange:'#E0902A', green:'#5FAF4E', blue:'#3E90D0', purple:'#A25D95' };
+
+/* ====== TIMELINE / EVENT LOG ====== */
+const eventLog = [];     // chronological: orbs, hearts, and 🏆
+const orbOrder = [];     // just the orbs in order, for the victory popup
+let trophyAwarded = false;
+let victoryShown = false;
 
 const CATS = [
   {
@@ -339,6 +432,70 @@ const CATS = [
 const state = {};
 CATS.forEach(c=>{ state[c.key] = { orbs:0, lives:3, correct:0 }; });
 
+/* ====== EVENT LOGGING ====== */
+function logOrb(catKey){
+  eventLog.push(ORB_EMOJI[catKey]);
+  orbOrder.push(catKey);
+  if (!trophyAwarded){
+    const totalOrbs = CATS.reduce(function(sum, c){ return sum + state[c.key].orbs; }, 0);
+    if (totalOrbs >= 6){
+      trophyAwarded = true;
+      eventLog.push('🏆');
+      setTimeout(showVictory, 600);
+    }
+  }
+  updateShareButton();
+}
+function logHeartLoss(catKey){
+  eventLog.push(HEART_EMOJI[catKey]);
+  updateShareButton();
+}
+
+/* ====== VICTORY ====== */
+function showVictory(){
+  if (victoryShown) return;
+  victoryShown = true;
+  const firstSix = orbOrder.slice(0, 6);
+  const orbsHTML = firstSix.map(function(k){
+    return '<div class="vorb" style="background:' + ORB_HEX[k] + '"></div>';
+  }).join('');
+  document.getElementById('victoryOrbs').innerHTML = orbsHTML;
+  document.getElementById('victoryText').innerHTML = 'You collected 6 orbs.<br>Congratulations!';
+  document.getElementById('victoryOverlay').classList.add('active');
+}
+function dismissVictory(){
+  document.getElementById('victoryOverlay').classList.remove('active');
+}
+
+/* ====== SHARE ====== */
+function updateShareButton(){
+  const btn = document.getElementById('shareBtn');
+  if (btn) btn.disabled = eventLog.length === 0;
+}
+function shareResults(){
+  const dateStr = new Date().toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'});
+  const lines = [
+    'Daily Orbs — ' + dateStr,
+    eventLog.join(''),
+    '',
+    'https://panquak.github.io/DailyOrbs/'
+  ];
+  const text = lines.join('\n');
+
+  if (navigator.share){
+    navigator.share({ text: text }).catch(function(){});
+  } else if (navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      alert('Results copied to clipboard!');
+    }).catch(function(){
+      prompt('Copy your results:', text);
+    });
+  } else {
+    prompt('Copy your results:', text);
+  }
+}
+
+/* ====== RENDERING ====== */
 function dotFill(correct, start, end, color){
   if(correct >= end) return color;
   if(correct > start){
@@ -412,19 +569,27 @@ function renderHub(){
       '</div>' +
     '</div>';
   }).join('');
+  updateShareButton();
 }
 
 function registerCorrect(catKey, n){
   n = n || 1;
   const c = CATS.find(function(x){ return x.key === catKey; });
   const s = state[catKey];
+  const prevOrbs = s.orbs;
   s.correct += n;
   s.orbs = c.thresholds.filter(function(t){ return s.correct >= t; }).length;
+  for (let i = prevOrbs; i < s.orbs; i++){
+    logOrb(catKey);
+  }
   renderHub();
 }
 function registerWrong(catKey){
   const s = state[catKey];
-  s.lives = Math.max(0, s.lives - 1);
+  if (s.lives > 0){
+    s.lives--;
+    logHeartLoss(catKey);
+  }
   renderHub();
 }
 function refreshTopBadge(catKey){
@@ -432,6 +597,7 @@ function refreshTopBadge(catKey){
   if(el) el.innerHTML = badgeHTML(catKey);
 }
 
+/* ====== OVERLAY SHELL ====== */
 function openGame(key){
   let el = document.getElementById('overlay-' + key);
   if(!el){
@@ -477,6 +643,7 @@ function buildGame(key, el){
   if(c.type === 'categorize') buildCategorize(c, body);
 }
 
+/* ====== FILL ====== */
 function buildFill(c, body){
   const gs = { solved:new Set(), revealed:new Set(), orbHTML:{}, done:false };
 
@@ -548,6 +715,7 @@ function buildFill(c, body){
   render();
 }
 
+/* ====== CROSS-MATCH ====== */
 function buildCrossMatch(c, body){
   const gs = { leftSel:null, rightSel:null, removedLeft:new Set(), removedRight:new Set(), log:[], revealed:false };
 
@@ -692,6 +860,7 @@ function buildCrossMatch(c, body){
   render();
 }
 
+/* ====== CATEGORIZE ====== */
 function buildCategorize(c, body){
   const fieldTotals = Object.assign({}, c.fieldTotals);
   const gs = {
