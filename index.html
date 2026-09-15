@@ -119,13 +119,13 @@
   .center-connector{ color:var(--text-dim); font-size:16px; }
 
   .img-chip{
-    width:100px; height:80px; border:2px solid var(--panel-line); border-radius:10px; overflow:hidden; cursor:pointer;
+    width:150px; height:120px; border:2px solid var(--panel-line); border-radius:12px; overflow:hidden; cursor:pointer;
     background:var(--panel);
   }
   .img-chip:hover{ border-color:var(--accent); }
   .img-chip img{ display:block; width:100%; height:100%; object-fit:cover; }
-  .center-slot.img-slot{ padding:6px; min-width:100px; }
-  .center-slot.img-slot img{ width:90px; height:66px; display:block; margin:0 auto; object-fit:cover; border-radius:6px; }
+  .center-slot.img-slot{ padding:8px; min-width:216px; }
+  .center-slot.img-slot img{ width:200px; height:150px; display:block; margin:0 auto; object-fit:cover; border-radius:8px; }
 
   .log-title{
     font-size:14px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-dim);
@@ -139,13 +139,13 @@
   .log-entry.wrong span.logtext{ text-decoration:line-through; color:var(--text-dim); }
   .log-entry.revealed span.logtext{ color:var(--text-dim); font-style:italic; }
   .log-content{ display:flex; flex-direction:column; gap:4px; flex:1; }
-  .logtext{ display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .logtext{ display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .logsub{ font-size:14px; color:var(--text-dim); }
   .log-right{ display:flex; align-items:center; gap:12px; flex-shrink:0; }
   .log-orbs{ display:flex; gap:6px; }
   .log-orbs .dot{ width:20px; height:20px; border-radius:50%; border:2px solid var(--accent); box-sizing:border-box; }
   .log-entry .badge{ font-size:20px; flex-shrink:0; }
-  .log-flag{ width:34px; height:34px; border-radius:4px; display:inline-block; flex-shrink:0; object-fit:cover; }
+  .log-flag{ width:56px; height:56px; border-radius:6px; display:inline-block; flex-shrink:0; object-fit:cover; }
 
   .cat-item-row{
     background:var(--panel); border:1.5px solid var(--panel-line); border-radius:12px;
@@ -186,6 +186,14 @@
   }
   .reveal-btn:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
   .reveal-btn:disabled{ opacity:0.5; cursor:default; }
+
+  /* mobile tweaks for bigger images */
+  @media (max-width: 640px){
+    .img-chip{ width:120px; height:100px; }
+    .center-slot.img-slot{ min-width:180px; }
+    .center-slot.img-slot img{ width:164px; height:124px; }
+    .log-flag{ width:48px; height:48px; }
+  }
 </style>
 </head>
 <body>
