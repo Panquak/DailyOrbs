@@ -196,12 +196,12 @@ const PUZZLES = {
      2026-02-20 — Same Consonants / Butterflies / Boy Names / Super Bowl
      ========================================================== */
   '2026-02-20': [
-        {
+            {
       key:'orange', color:'var(--orange)', name:'Same Consonants',
-      desc:'Each pair of clues has two answers that share the same consonants.\n\nA consonant can appear more times in one word than the other, but every consonant in the pair appears at least once in each word.\n\nType just one of the two answers \u2014 either one will solve the pair.\n\nExample:\nQ1: thrilling amusement park ride\nQ2: dense group of something\n\nAnswers:\nrollercoaster\ncluster',
+      desc:'Find two words that share the same consonants.',
       type:'pair-fill',
       thresholds:[3,6,9], total:10,
-      instructions:'Each clue leads to a word built from the same consonants as its partner (ignoring order and repeats). Type either word to solve the pair.',
+      instructions:'Each pair of clues has two answers that share the same consonants.\n\nA consonant can appear more times in one word than the other, but every consonant in the pair appears at least once in each word.\n\nType just one of the two answers \u2014 either one will solve the pair.\n\nExample:\nQ1: thrilling amusement park ride\nQ2: dense group of something\n\nAnswers:\nrollercoaster\ncluster',
       items:[
         {clues:['specific way to say something','Dec-Jan zodiac sign'], answers:['pronounce','capricorn']},
         {clues:['biggest land mammal','Alexander Graham Bell'], answers:['elephant','telephone']},
