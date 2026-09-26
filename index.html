@@ -696,13 +696,10 @@ function buildPairFill(c, body){
   function normalize(s){
     return s.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
   }
-  function checkPair(input, answers){
+    function checkPair(input, answers){
     const n = normalize(input);
     if (!n) return false;
-    for (const a of answers){
-      if (!n.includes(normalize(a))) return false;
-    }
-    return true;
+    return answers.some(a => n.includes(normalize(a)));
   }
 
   function persist(){

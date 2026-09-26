@@ -196,16 +196,16 @@ const PUZZLES = {
      2026-02-20 — Same Consonants / Butterflies / Boy Names / Super Bowl
      ========================================================== */
   '2026-02-20': [
-    {
+        {
       key:'orange', color:'var(--orange)', name:'Same Consonants',
-      desc:'Find two words that share the same consonants.',
+      desc:'Find a word that shares the same consonants as its clue.',
       type:'pair-fill',
       thresholds:[3,6,9], total:10,
-      instructions:'Each pair of clues leads to two words built from the same set of consonants (ignoring order and repeats). Type both words, separated by a space.',
+      instructions:'Each clue leads to a word built from the same consonants as its partner (ignoring order and repeats). Type either word to solve the pair.',
       items:[
         {clues:['specific way to say something','Dec-Jan zodiac sign'], answers:['pronounce','capricorn']},
         {clues:['biggest land mammal','Alexander Graham Bell'], answers:['elephant','telephone']},
-        {clues:['plane, boat, and truck are forms of this','piece of an atom'], answers:['transport','protons']},
+        {clues:['plane, boat, and truck are forms of this','pieces of atom'], answers:['transport','protons']},
         {clues:['what every student in a strict school has','what kombucha needs to do before it\u2019s eaten'], answers:['uniform','ferment']},
         {clues:['big coin','rotational force'], answers:['quarter','torque']},
         {clues:['opposite of well known','person who copies documents by hand'], answers:['obscure','scribe']},
