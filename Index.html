@@ -359,6 +359,7 @@ function getCatData(key){
   return c.data;
 }
 
+/* ============ NAVIGATION ============ */
 function loadPuzzle(date){
   CURRENT_DATE = date;
   PUZ = ensureState(date);
@@ -375,7 +376,8 @@ function goToPuzzle(delta){
   const idx = dates.indexOf(CURRENT_DATE);
   const next = idx + delta;
   if (next < 0 || next >= dates.length) return;
-  saveStored(); loadPuzzle(dates[next]);
+  saveStored();
+  loadPuzzle(dates[next]);
 }
 function goToToday(){
   const d = defaultDate();
@@ -392,6 +394,7 @@ function updateNav(){
   document.getElementById('navToday').style.display = (CURRENT_DATE !== todayDefault) ? 'inline-block' : 'none';
 }
 
+/* ============ EVENT LOGGING ============ */
 function logOrb(catKey){
   PUZ.eventLog.push(ORB_EMOJI[catKey]);
   PUZ.orbOrder.push(catKey);
@@ -418,8 +421,12 @@ function showVictory(){
   document.getElementById('victoryText').innerHTML = 'You collected 6 orbs.<br>Congratulations!';
   document.getElementById('victoryOverlay').classList.add('active');
 }
-function dismissVictory(){ document.getElementById('victoryOverlay').classList.remove('active'); saveStored(); }
+function dismissVictory(){
+  document.getElementById('victoryOverlay').classList.remove('active');
+  saveStored();
+}
 
+/* ============ SHARE ============ */
 function updateShareButton(){
   const btn = document.getElementById('shareBtn');
   if (btn) btn.disabled = !PUZ || PUZ.eventLog.length === 0;
@@ -427,13 +434,21 @@ function updateShareButton(){
 function shareResults(){
   const d = new Date(CURRENT_DATE + 'T12:00:00');
   const dateStr = d.toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'});
-  const lines = [ 'Daily Orbs — ' + dateStr, PUZ.eventLog.join(''), '', 'https://panquak.github.io/DailyOrbs/#' + CURRENT_DATE ];
+  const lines = [
+    'Daily Orbs — ' + dateStr,
+    PUZ.eventLog.join(''),
+    '',
+    'https://panquak.github.io/DailyOrbs/#' + CURRENT_DATE
+  ];
   const text = lines.join('\n');
   if (navigator.share){ navigator.share({ text }).catch(()=>{}); }
-  else if (navigator.clipboard){ navigator.clipboard.writeText(text).then(()=> alert('Results copied to clipboard!')).catch(()=> prompt('Copy your results:', text)); }
-  else { prompt('Copy your results:', text); }
+  else if (navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=> alert('Results copied to clipboard!'))
+      .catch(()=> prompt('Copy your results:', text));
+  } else { prompt('Copy your results:', text); }
 }
 
+/* ============ RENDERING HELPERS ============ */
 function dotFill(correct, start, end, color){
   if(correct >= end) return color;
   if(correct > start){
@@ -462,4 +477,593 @@ function dotsHTMLWithNewFill(correct, thresholds, color, prevCorrect){
     const end = thresholds[i];
     const prevPct = Math.max(0, Math.min(100, ((prevCorrect - start) / (end - start)) * 100));
     const currPct = Math.max(0, Math.min(100, ((correct - start) / (end - start)) * 100));
-   
+    let bg;
+    if(currPct <= 0){ bg = 'var(--panel)'; }
+    else if(prevPct >= currPct){ bg = 'conic-gradient(' + color + ' 0% ' + currPct + '%, var(--panel) ' + currPct + '% 100%)'; }
+    else {
+      const trans = 'color-mix(in srgb, ' + color + ' 40%, transparent)';
+      bg = prevPct > 0
+        ? 'conic-gradient(' + color + ' 0% ' + prevPct + '%, ' + trans + ' ' + prevPct + '% ' + currPct + '%, var(--panel) ' + currPct + '% 100%)'
+        : 'conic-gradient(' + trans + ' 0% ' + currPct + '%, var(--panel) ' + currPct + '% 100%)';
+    }
+    return '<div class="icon-slot"><div class="dot" style="--accent:' + color + '; background:' + bg + ';"></div></div>';
+  }).join('');
+}
+function heartsHTML(lives, color){
+  return [0,1,2].map(i=>{
+    const filled = i < lives;
+    return '<div class="icon-slot"><svg class="heart" viewBox="1.25 2.25 21.5 20.25" fill="' + (filled ? color : 'none') + '" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>';
+  }).join('');
+}
+function badgeHTML(catKey){
+  const c = CURRENT_CATS.find(x => x.key === catKey);
+  const s = PUZ.cats[catKey];
+  return '<div style="text-align:right;">' +
+    '<div class="icon-row orbs">' + dotsHTML(s.correct, c.thresholds, c.color, s.dead) + '</div>' +
+    '<div class="icon-row hearts">' + heartsHTML(s.lives, c.color) + '</div>' +
+    '</div>';
+}
+
+/* ============ HUB ============ */
+function renderHub(){
+  document.getElementById('hubDate').textContent = new Date(CURRENT_DATE + 'T12:00:00')
+    .toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric', year:'numeric'});
+  document.getElementById('catRows').innerHTML = CURRENT_CATS.map(c=>{
+    const s = PUZ.cats[c.key];
+    return '<div class="cat-row" style="--accent:' + c.color + '" onclick="openGame(\'' + c.key + '\')">' +
+      '<div class="cat-left">' +
+        '<p class="cat-name">' + c.name + '</p>' +
+        '<p class="cat-desc">' + c.desc + '</p>' +
+      '</div>' +
+      '<div class="cat-right">' +
+        '<div class="icon-row orbs">' + dotsHTML(s.correct, c.thresholds, c.color, s.dead) + '</div>' +
+        '<div class="icon-row hearts">' + heartsHTML(s.lives, c.color) + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============ SCORING ============ */
+function registerCorrect(catKey, n){
+  n = n || 1;
+  const c = CURRENT_CATS.find(x => x.key === catKey);
+  const s = PUZ.cats[catKey];
+  if (s.dead) return;
+  const prevOrbs = s.orbs;
+  s.correct += n;
+  s.orbs = c.thresholds.filter(t => s.correct >= t).length;
+  for (let i = prevOrbs; i < s.orbs; i++) logOrb(catKey);
+  renderHub();
+  saveStored();
+}
+function registerWrong(catKey){
+  const s = PUZ.cats[catKey];
+  if (s.dead) return;
+  if (s.lives > 0){
+    s.lives--;
+    logHeartLoss(catKey);
+    if (s.lives === 0){
+      s.dead = true;
+      setTimeout(()=>{ if (gameRerender[catKey]) gameRerender[catKey](); }, 450);
+    }
+  }
+  renderHub();
+  saveStored();
+}
+function refreshTopBadge(catKey){
+  const el = document.getElementById('topbadge-' + catKey);
+  if (el) el.innerHTML = badgeHTML(catKey);
+}
+
+/* ============ OVERLAY SHELL ============ */
+function openGame(key){
+  let el = document.getElementById('overlay-' + key);
+  if (!el){
+    el = document.createElement('div');
+    el.className = 'overlay';
+    el.id = 'overlay-' + key;
+    document.getElementById('overlays').appendChild(el);
+    buildGame(key, el);
+  }
+  el.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeGame(key){
+  document.getElementById('overlay-' + key).classList.remove('active');
+  document.body.style.overflow = '';
+  saveStored();
+}
+function shellHTML(c){
+  return '<div class="game-wrap">' +
+    '<div class="game-top-bar" style="--accent:' + c.color + '">' +
+      '<div class="game-top-row">' +
+        '<div><h1 class="game-title">' + c.name + '</h1>' +
+        '<p class="game-instructions">' + c.desc + '</p></div>' +
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">' +
+          '<button class="back-link" onclick="closeGame(\'' + c.key + '\')">Menu</button>' +
+          '<div id="topbadge-' + c.key + '">' + badgeHTML(c.key) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rules-box">' + c.instructions + '</div>' +
+    '</div>' +
+    '<div id="gamebody-' + c.key + '"></div>' +
+  '</div>';
+}
+function buildGame(key, el){
+  const c = CURRENT_CATS.find(x => x.key === key);
+  el.innerHTML = shellHTML(c);
+  const body = document.getElementById('gamebody-' + key);
+  if (c.type === 'fill') buildFill(c, body);
+  if (c.type === 'cross-match') buildCrossMatch(c, body);
+  if (c.type === 'categorize') buildCategorize(c, body);
+  if (c.type === 'list-fill') buildListFill(c, body);
+}
+
+/* ============ FILL ============ */
+function buildFill(c, body){
+  const d = getCatData(c.key);
+  if (!d.solved) d.solved = [];
+  if (!d.revealed) d.revealed = [];
+  if (!d.gains) d.gains = {};
+  if (d.done === undefined) d.done = false;
+  const solvedSet = new Set(d.solved);
+  const revealedSet = new Set(d.revealed);
+
+  function persist(){
+    d.solved = Array.from(solvedSet);
+    d.revealed = Array.from(revealedSet);
+  }
+
+  function render(){
+    let html = c.items.map((item, i)=>{
+      const isCorrect = solvedSet.has(i);
+      const isRevealed = revealedSet.has(i);
+      const cls = isCorrect ? 'correct' : (isRevealed ? 'revealed' : '');
+      const val = isRevealed ? item.answers[0] : '';
+      const disabled = isCorrect || isRevealed || d.done;
+      let orbDisplay = '';
+      if (isCorrect && d.gains[i] !== undefined){
+        orbDisplay = dotsHTMLWithNewFill(PUZ.cats[c.key].correct, c.thresholds, c.color, d.gains[i]);
+      }
+      return '<div class="fill-row ' + cls + '" id="fillrow-' + c.key + '-' + i + '">' +
+        '<div class="fill-clue"><span>' + item.clue + '</span>' +
+          '<div class="inline-orbs">' + orbDisplay + '</div></div>' +
+        '<div class="fill-input-line">' +
+          '<input type="text" id="fillinput-' + c.key + '-' + i + '" autocomplete="off" placeholder="Your answer" value="' + val + '" ' + (disabled ? 'disabled' : '') + '>' +
+          '<button class="fill-submit" onclick="window.__fill_' + c.key + '.submit(' + i + ')" ' + (disabled ? 'disabled' : '') + '>&#8629;</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    html += '<button class="reveal-btn" onclick="window.__fill_' + c.key + '.reveal()" ' + (d.done ? 'disabled' : '') + '>' + (d.done ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
+    body.innerHTML = html;
+    c.items.forEach((item, i)=>{
+      const input = document.getElementById('fillinput-' + c.key + '-' + i);
+      if (input && !input.disabled){
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') window['__fill_' + c.key].submit(i); });
+      }
+    });
+  }
+
+  gameRerender[c.key] = render;
+
+  window['__fill_' + c.key] = {
+    submit(i){
+      if (solvedSet.has(i) || revealedSet.has(i) || d.done) return;
+      const item = c.items[i];
+      const input = document.getElementById('fillinput-' + c.key + '-' + i);
+      const row = document.getElementById('fillrow-' + c.key + '-' + i);
+      const val = input.value.trim().toLowerCase().replace(/\s+/g, '');
+      const ok = item.answers.some(a => a.toLowerCase().replace(/\s+/g, '') === val);
+      const wasDead = PUZ.cats[c.key].dead;
+      const prevCorrect = PUZ.cats[c.key].correct;
+      if (ok){
+        solvedSet.add(i);
+        d.gains[i] = prevCorrect;
+        row.classList.add('correct');
+        input.disabled = true;
+        row.querySelector('.fill-submit').disabled = true;
+        registerCorrect(c.key, 1);
+        refreshTopBadge(c.key);
+        if (!wasDead){
+          row.querySelector('.inline-orbs').innerHTML =
+            dotsHTMLWithNewFill(PUZ.cats[c.key].correct, c.thresholds, c.color, prevCorrect);
+        }
+        persist();
+      } else {
+        row.classList.add('wrongflash');
+        registerWrong(c.key);
+        refreshTopBadge(c.key);
+        setTimeout(()=> row.classList.remove('wrongflash'), 400);
+      }
+    },
+    reveal(){
+      if (d.done) return;
+      d.done = true;
+      c.items.forEach((item, i)=>{ if (!solvedSet.has(i)) revealedSet.add(i); });
+      persist(); saveStored(); render();
+    }
+  };
+  render();
+}
+
+/* ============ CROSS-MATCH ============ */
+function buildCrossMatch(c, body){
+  const d = getCatData(c.key);
+  if (!d.log) d.log = [];
+  if (!d.removedLeft) d.removedLeft = [];
+  if (!d.removedRight) d.removedRight = [];
+  if (d.revealed === undefined) d.revealed = false;
+  const removedLeft = new Set(d.removedLeft);
+  const removedRight = new Set(d.removedRight);
+  let leftSel = null, rightSel = null;
+
+  function persist(){
+    d.removedLeft = Array.from(removedLeft);
+    d.removedRight = Array.from(removedRight);
+  }
+
+  function chipHTML(item, side){
+    if (side === 'right' && c.rightIsImage){
+      return '<div class="img-chip" onclick="window.__ccm_' + c.key + '.pick(\'right\',\'' + item.id + '\')"><img src="' + IMG_BASE + item.img + '" alt=""></div>';
+    }
+    return '<div class="chip" onclick="window.__ccm_' + c.key + '.pick(\'' + side + '\',\'' + item.id + '\')">' + item.label + '</div>';
+  }
+  function centerSlotHTML(side){
+    const selId = side === 'left' ? leftSel : rightSel;
+    if (!selId){
+      return '<div class="center-slot">' + (side === 'left' ? c.leftLabel : c.rightLabel) + '</div>';
+    }
+    const bank = side === 'left' ? c.leftBank : c.rightBank;
+    const item = bank.find(x => x.id === selId);
+    if (side === 'right' && c.rightIsImage){
+      return '<div class="center-slot img-slot filled" onclick="window.__ccm_' + c.key + '.pick(\'right\',\'' + item.id + '\')"><img src="' + IMG_BASE + item.img + '" alt=""></div>';
+    }
+    return '<div class="center-slot filled" onclick="window.__ccm_' + c.key + '.pick(\'' + side + '\',\'' + item.id + '\')">' + item.label + '</div>';
+  }
+  function logEntryHTML(l){
+    let rightSide = '';
+    if (!l.revealed){
+      if (l.wasDead){
+        rightSide = l.right
+          ? '<span class="log-check" style="color:' + c.color + ';">✓</span>'
+          : '<span class="badge">X</span>';
+      } else {
+        rightSide = '<div class="log-orbs">' + dotsHTMLWithNewFill(l.correct, c.thresholds, c.color, l.prevCorrect) + '</div>';
+        if (!l.right) rightSide += '<span class="badge">X</span>';
+      }
+    }
+    const rc = l.image ? '<img class="log-flag" src="' + IMG_BASE + l.image + '" alt="">' : (l.rightText || '');
+    return '<div class="log-entry ' + (l.right ? 'right' : 'wrong') + ' ' + (l.revealed ? 'revealed' : '') + '">' +
+      '<div class="log-content">' +
+        '<span class="logtext">' + l.leftText + ' ' + c.connector + ' ' + rc + '</span>' +
+        (l.origin ? '<span class="logsub">' + l.origin + '</span>' : '') +
+      '</div>' +
+      '<div class="log-right">' + rightSide + '</div>' +
+    '</div>';
+  }
+
+  function render(){
+    const s = PUZ.cats[c.key];
+    body.innerHTML =
+      '<div class="bank-label">' + c.leftLabel + '</div><div class="bank" id="leftbank-' + c.key + '"></div>' +
+      '<div class="center-strip">' + centerSlotHTML('left') +
+        '<span class="center-connector">' + c.connector + '</span>' + centerSlotHTML('right') + '</div>' +
+      '<div class="bank-label">' + c.rightLabel + '</div><div class="bank" id="rightbank-' + c.key + '"></div>' +
+      '<div class="log-title"><span>Guess Log</span>' +
+        '<div class="inline-orbs">' + dotsHTML(s.correct, c.thresholds, c.color, s.dead) + '</div></div>' +
+      '<div id="log-' + c.key + '"></div>' +
+      '<button class="reveal-btn" onclick="window.__ccm_' + c.key + '.reveal()" ' + (d.revealed ? 'disabled' : '') + '>' + (d.revealed ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
+    const lb = document.getElementById('leftbank-' + c.key);
+    c.leftBank.forEach(item=>{
+      if (removedLeft.has(item.id) || leftSel === item.id) return;
+      lb.insertAdjacentHTML('beforeend', chipHTML(item, 'left'));
+    });
+    const rb = document.getElementById('rightbank-' + c.key);
+    c.rightBank.forEach(item=>{
+      if (removedRight.has(item.id) || rightSel === item.id) return;
+      rb.insertAdjacentHTML('beforeend', chipHTML(item, 'right'));
+    });
+    document.getElementById('log-' + c.key).innerHTML = d.log.slice().reverse().map(logEntryHTML).join('');
+  }
+
+  gameRerender[c.key] = render;
+
+  function pick(side, id){
+    if (d.revealed) return;
+    if (side === 'left') leftSel = (leftSel === id) ? null : id;
+    else rightSel = (rightSel === id) ? null : id;
+    if (leftSel && rightSel){
+      const leftItem = c.leftBank.find(x => x.id === leftSel);
+      const rightItem = c.rightBank.find(x => x.id === rightSel);
+      const right = leftSel === rightSel;
+      const wasDead = PUZ.cats[c.key].dead;
+      const prevCorrect = PUZ.cats[c.key].correct;
+      if (right){
+        removedLeft.add(leftSel); removedRight.add(rightSel);
+        registerCorrect(c.key, 1);
+      } else {
+        registerWrong(c.key);
+      }
+      d.log.push({
+        leftText: leftItem.label,
+        rightText: c.rightIsImage ? null : rightItem.label,
+        image: c.rightIsImage ? rightItem.img : null,
+        origin: rightItem.origin || null,
+        right, revealed:false, wasDead,
+        prevCorrect, correct: PUZ.cats[c.key].correct
+      });
+      leftSel = null; rightSel = null;
+      refreshTopBadge(c.key);
+      persist(); saveStored();
+    }
+    render();
+  }
+  function reveal(){
+    if (d.revealed) return;
+    d.revealed = true;
+    leftSel = null; rightSel = null;
+    c.leftBank.filter(l => !removedLeft.has(l.id)).forEach(l=>{
+      const r = c.rightBank.find(x => x.id === l.id);
+      removedLeft.add(l.id); removedRight.add(r.id);
+      d.log.push({
+        leftText: l.label,
+        rightText: c.rightIsImage ? null : r.label,
+        image: c.rightIsImage ? r.img : null,
+        origin: r.origin || null,
+        right:true, revealed:true,
+        wasDead: PUZ.cats[c.key].dead,
+        prevCorrect: PUZ.cats[c.key].correct,
+        correct: PUZ.cats[c.key].correct
+      });
+    });
+    persist(); saveStored(); render();
+  }
+
+  window['__ccm_' + c.key] = { pick, reveal };
+  render();
+}
+
+/* ============ CATEGORIZE ============ */
+function buildCategorize(c, body){
+  const d = getCatData(c.key);
+  if (!d.solved) d.solved = [];
+  if (!d.failed) d.failed = [];
+  if (!d.revealed) d.revealed = [];
+  if (!d.placedCount) d.placedCount = {};
+  if (!d.gains) d.gains = {};
+  if (d.done === undefined) d.done = false;
+  const solved = new Set(d.solved);
+  const failed = new Set(d.failed);
+  const revealed = new Set(d.revealed);
+  const fieldTotals = {};
+  c.fields.forEach(f=>{
+    if (d.placedCount[f.key] === undefined) d.placedCount[f.key] = 0;
+    fieldTotals[f.key] = c.fieldTotals[f.key] - d.placedCount[f.key];
+  });
+
+  function persist(){
+    d.solved = Array.from(solved);
+    d.failed = Array.from(failed);
+    d.revealed = Array.from(revealed);
+    saveStored();
+  }
+
+  function render(){
+    let html = c.items.map((item, i)=>{
+      let cls = '';
+      if (solved.has(i)) cls = 'correct';
+      else if (failed.has(i)) cls = 'failed';
+      else if (revealed.has(i)) cls = 'revealed';
+      const rowLocked = solved.has(i) || failed.has(i) || revealed.has(i) || d.done;
+      const buttons = c.fields.map(f=>{
+        const remaining = fieldTotals[f.key];
+        const isFull = remaining <= 0;
+        const disabled = rowLocked || isFull;
+        const btnClass = 'cat-btn' + (isFull ? ' full' : '');
+        const moreText = isFull ? 'full' : ('<b>' + remaining + '</b> more');
+        return '<button class="' + btnClass + '" ' + (disabled ? 'disabled' : '') + ' onclick="window.__ccz_' + c.key + '.pick(' + i + ',\'' + f.key + '\')">' +
+          '<span class="emoji">' + f.emoji + '</span>' +
+          '<span>' + f.label + '</span>' +
+          '<span class="more">' + moreText + '</span>' +
+        '</button>';
+      }).join('');
+      let orbDisplay = '';
+      if (solved.has(i) && d.gains[i] !== undefined){
+        orbDisplay = dotsHTMLWithNewFill(PUZ.cats[c.key].correct, c.thresholds, c.color, d.gains[i]);
+      }
+      return '<div class="cat-item-row ' + cls + '" id="catrow-' + c.key + '-' + i + '">' +
+        '<div class="cat-item-name"><span>' + item.name + '</span>' +
+          '<div class="inline-orbs">' + orbDisplay + '</div></div>' +
+        '<div class="cat-buttons">' + buttons + '</div>' +
+      '</div>';
+    }).join('');
+    html += '<button class="reveal-btn" onclick="window.__ccz_' + c.key + '.reveal()" ' + (d.done ? 'disabled' : '') + '>' + (d.done ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
+    body.innerHTML = html;
+    const allDone = c.items.every((_, i)=> solved.has(i) || failed.has(i) || revealed.has(i));
+    if (allDone && !d.done){
+      const anyFailed = failed.size > 0;
+      body.insertAdjacentHTML('afterbegin', '<div class="done-banner">' + (anyFailed ? 'Puzzle complete (with mistakes)' : 'All items sorted!') + '</div>');
+    }
+  }
+
+  gameRerender[c.key] = render;
+
+  window['__ccz_' + c.key] = {
+    pick(i, field){
+      if (solved.has(i) || failed.has(i) || revealed.has(i) || d.done) return;
+      if (fieldTotals[field] <= 0) return;
+      const item = c.items[i];
+      const prevCorrect = PUZ.cats[c.key].correct;
+      if (item.field === field){
+        solved.add(i);
+        d.placedCount[field] = (d.placedCount[field] || 0) + 1;
+        fieldTotals[field]--;
+        d.gains[i] = prevCorrect;
+        registerCorrect(c.key, 1);
+      } else {
+        failed.add(i);
+        fieldTotals[item.field]--;
+        registerWrong(c.key);
+      }
+      refreshTopBadge(c.key);
+      persist(); render();
+    },
+    reveal(){
+      if (d.done) return;
+      d.done = true;
+      c.items.forEach((_, i)=>{ if (!solved.has(i) && !failed.has(i)) revealed.add(i); });
+      persist(); render();
+    }
+  };
+  render();
+}
+
+/* ============ LIST FILL ============ */
+function buildListFill(c, body){
+  const d = getCatData(c.key);
+  if (!d.found) d.found = [];
+  if (!d.log) d.log = [];
+  if (d.done === undefined) d.done = false;
+  const found = new Set(d.found);
+
+  function normalize(s){
+    return s.trim().toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ');
+  }
+  function findMatch(input){
+    const n = normalize(input);
+    if (!n) return -1;
+    for (let i = 0; i < c.items.length; i++){
+      if (found.has(i)) continue;
+      const item = c.items[i];
+      const aliases = [item.name].concat(item.aliases || []);
+      for (const a of aliases){
+        if (normalize(a) === n) return i;
+      }
+    }
+    return -1;
+  }
+
+  function persist(){
+    d.found = Array.from(found);
+    saveStored();
+  }
+
+  function render(){
+    const s = PUZ.cats[c.key];
+    const remaining = c.items.length - found.size;
+    const dead = s.dead;
+    const blankHTML = c.items.map((item, i)=>{
+      const isFound = found.has(i);
+      return '<div class="lf-blank ' + (isFound ? 'filled' : '') + '">' +
+        (isFound ? item.name : item.hint) +
+      '</div>';
+    }).join('');
+
+    const logHTML = d.log.slice().reverse().map(l=>{
+      let rightSide = '';
+      if (l.wasDead){
+        rightSide = l.right
+          ? '<span class="log-check" style="color:' + c.color + ';">✓</span>'
+          : '<span class="badge">X</span>';
+      } else {
+        rightSide = '<div class="log-orbs">' + dotsHTMLWithNewFill(l.correct, c.thresholds, c.color, l.prevCorrect) + '</div>';
+        if (!l.right) rightSide += '<span class="badge">X</span>';
+      }
+      return '<div class="log-entry ' + (l.right ? 'right' : 'wrong') + '">' +
+        '<div class="log-content"><span class="logtext">' + l.text + '</span></div>' +
+        '<div class="log-right">' + rightSide + '</div>' +
+      '</div>';
+    }).join('');
+
+    const inputDisabled = d.done || dead || remaining === 0;
+    body.innerHTML =
+      '<div class="lf-grid">' + blankHTML + '</div>' +
+      '<div class="lf-input-row">' +
+        '<input type="text" id="lfinput-' + c.key + '" autocomplete="off" spellcheck="false" placeholder="' + (remaining > 0 ? remaining + ' team' + (remaining === 1 ? '' : 's') + ' remaining…' : 'All found!') + '" ' + (inputDisabled ? 'disabled' : '') + '>' +
+        '<button class="lf-submit" id="lfsubmit-' + c.key + '" ' + (inputDisabled ? 'disabled' : '') + '>&#8629;</button>' +
+      '</div>' +
+      '<div class="log-title"><span>Guess Log</span>' +
+        '<div class="inline-orbs">' + dotsHTML(s.correct, c.thresholds, c.color, s.dead) + '</div></div>' +
+      '<div id="lflog-' + c.key + '">' + logHTML + '</div>' +
+      '<button class="reveal-btn" onclick="window.__lf_' + c.key + '.reveal()" ' + (d.done ? 'disabled' : '') + '>' + (d.done ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
+
+    const input = document.getElementById('lfinput-' + c.key);
+    const submitBtn = document.getElementById('lfsubmit-' + c.key);
+    if (input && !input.disabled){
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') window['__lf_' + c.key].submit(); });
+      if (submitBtn) submitBtn.onclick = ()=> window['__lf_' + c.key].submit();
+    }
+  }
+
+  gameRerender[c.key] = render;
+
+  window['__lf_' + c.key] = {
+    submit(){
+      if (d.done || PUZ.cats[c.key].dead) return;
+      const input = document.getElementById('lfinput-' + c.key);
+      if (!input) return;
+      const raw = input.value;
+      if (!raw.trim()) return;
+      input.value = '';
+
+      const idx = findMatch(raw);
+      const wasDead = PUZ.cats[c.key].dead;
+      const prevCorrect = PUZ.cats[c.key].correct;
+
+      if (idx >= 0){
+        found.add(idx);
+        registerCorrect(c.key, 1);
+        d.log.push({
+          text: c.items[idx].name,
+          right: true,
+          wasDead, prevCorrect,
+          correct: PUZ.cats[c.key].correct
+        });
+      } else {
+        registerWrong(c.key);
+        d.log.push({
+          text: raw.trim(),
+          right: false,
+          wasDead, prevCorrect,
+          correct: PUZ.cats[c.key].correct
+        });
+      }
+
+      refreshTopBadge(c.key);
+      persist();
+      render();
+      const newInput = document.getElementById('lfinput-' + c.key);
+      if (newInput && !newInput.disabled) newInput.focus();
+    },
+    reveal(){
+      if (d.done) return;
+      d.done = true;
+      c.items.forEach((_, i)=>{ if (!found.has(i)) found.add(i); });
+      persist(); render();
+    }
+  };
+  render();
+}
+
+/* ============ BOOT ============ */
+(function boot(){
+  const hash = location.hash.replace('#','');
+  const dates = puzzleDates();
+  let start = defaultDate();
+  if (hash && dates.includes(hash)) start = hash;
+  if (!start) {
+    document.getElementById('hubDate').textContent = 'No puzzles available';
+    return;
+  }
+  loadPuzzle(start);
+  window.addEventListener('hashchange', function(){
+    const h = location.hash.replace('#','');
+    if (h && h !== CURRENT_DATE && puzzleDates().includes(h)){
+      saveStored();
+      loadPuzzle(h);
+    }
+  });
+})();
+</script>
+</body>
+</html>
