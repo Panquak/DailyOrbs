@@ -203,7 +203,7 @@ const PUZZLES = {
       thresholds:[3,6,9], total:10,
       instructions:'Each pair of clues has two answers that share the same consonants.\n\nA consonant can appear more times in one word than the other, but every consonant in the pair appears at least once in each word.\n\nType just one of the two answers \u2014 either one will solve the pair.\n\nExample:\nQ1: thrilling amusement park ride\nQ2: dense group of something\n\nAnswers:\nrollercoaster\ncluster',
       items:[
-        {clues:['specific way to say something','Dec-Jan zodiac sign'], answers:['pronounce','capricorn']},
+        {clues:['articulate a word','Dec-Jan zodiac sign'], answers:['pronounce','capricorn']},
         {clues:['biggest land mammal','Alexander Graham Bell'], answers:['elephant','telephone']},
         {clues:['plane, boat, and truck are forms of this','pieces of atom'], answers:['transport','protons']},
         {clues:['what every student in a strict school has','what kombucha needs to do before it\u2019s eaten'], answers:['uniform','ferment']},
