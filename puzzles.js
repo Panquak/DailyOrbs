@@ -1,19 +1,11 @@
 /* ============================================================
    DAILY ORBS — PUZZLE DATA
-   ============================================================
-   To add a new puzzle:
-     1. Copy an existing block and change the date key (YYYY-MM-DD).
-     2. Replace the four category objects.
-     3. Categories must appear in order: orange, green, blue, purple.
-     4. Save and refresh.
-
-   Image categories read files from IMG_BASE (defined in index.html).
    ============================================================ */
 
 const PUZZLES = {
 
   /* ==========================================================
-     2026-02-10 — Original puzzle
+     2026-02-10 — Triple Letters / Root / Dishes / Majors
      ========================================================== */
   '2026-02-10': [
     {
@@ -72,16 +64,11 @@ const PUZZLES = {
         {id:'uzbekistan', label:'Uzbekistan'}, {id:'slovakia', label:'Slovakia'},
       ],
       rightBank:[
-        {id:'spain', img:'dish1.png'},
-        {id:'slovakia', img:'dish2.png'},
-        {id:'bosnia', img:'dish3.png'},
-        {id:'russia', img:'dish4.png'},
-        {id:'austria', img:'dish5.png'},
-        {id:'italy', img:'dish6.png'},
-        {id:'uzbekistan', img:'dish7.png'},
-        {id:'vietnam', img:'dish8.png'},
-        {id:'lebanon', img:'dish9.png'},
-        {id:'thailand', img:'dish10.png'},
+        {id:'spain', img:'dish1.png'}, {id:'slovakia', img:'dish2.png'},
+        {id:'bosnia', img:'dish3.png'}, {id:'russia', img:'dish4.png'},
+        {id:'austria', img:'dish5.png'}, {id:'italy', img:'dish6.png'},
+        {id:'uzbekistan', img:'dish7.png'}, {id:'vietnam', img:'dish8.png'},
+        {id:'lebanon', img:'dish9.png'}, {id:'thailand', img:'dish10.png'},
       ]
     },
     {
@@ -142,28 +129,18 @@ const PUZZLES = {
       instructions:'Every pen name below belongs to a writer who used a different name on their birth certificate. Match the pen name (top) to the real name (bottom).',
       connector:'is really', leftLabel:'Pen name', rightLabel:'Real name',
       leftBank:[
-        {id:'a1', label:'Mark Twain'},
-        {id:'a2', label:'George Orwell'},
-        {id:'a3', label:'Lewis Carroll'},
-        {id:'a4', label:'Dr. Seuss'},
-        {id:'a5', label:'Voltaire'},
-        {id:'a6', label:'Stendhal'},
-        {id:'a7', label:'George Eliot'},
-        {id:'a8', label:'Stan Lee'},
-        {id:'a9', label:'Lemony Snicket'},
-        {id:'a10', label:'Anne Rice'},
+        {id:'a1', label:'Mark Twain'}, {id:'a2', label:'George Orwell'},
+        {id:'a3', label:'Lewis Carroll'}, {id:'a4', label:'Dr. Seuss'},
+        {id:'a5', label:'Voltaire'}, {id:'a6', label:'Stendhal'},
+        {id:'a7', label:'George Eliot'}, {id:'a8', label:'Stan Lee'},
+        {id:'a9', label:'Lemony Snicket'}, {id:'a10', label:'Anne Rice'},
       ],
       rightBank:[
-        {id:'a4', label:'Theodor Geisel'},
-        {id:'a7', label:'Mary Ann Evans'},
-        {id:'a2', label:'Eric Blair'},
-        {id:'a9', label:'Daniel Handler'},
-        {id:'a10', label:'Howard Allen O\u2019Brien'},
-        {id:'a1', label:'Samuel Clemens'},
-        {id:'a5', label:'Fran\u00e7ois-Marie Arouet'},
-        {id:'a3', label:'Charles Dodgson'},
-        {id:'a8', label:'Stanley Lieber'},
-        {id:'a6', label:'Marie-Henri Beyle'},
+        {id:'a4', label:'Theodor Geisel'}, {id:'a7', label:'Mary Ann Evans'},
+        {id:'a2', label:'Eric Blair'}, {id:'a9', label:'Daniel Handler'},
+        {id:'a10', label:'Howard Allen O\u2019Brien'}, {id:'a1', label:'Samuel Clemens'},
+        {id:'a5', label:'Fran\u00e7ois-Marie Arouet'}, {id:'a3', label:'Charles Dodgson'},
+        {id:'a8', label:'Stanley Lieber'}, {id:'a6', label:'Marie-Henri Beyle'},
       ]
     },
     {
@@ -174,28 +151,18 @@ const PUZZLES = {
       instructions:'Tap a landmark name, then tap the photo that shows it. Tap either again to deselect before it locks in.',
       connector:'=', leftLabel:'Landmark', rightLabel:'Photo', rightIsImage:true,
       leftBank:[
-        {id:'taj', label:'Taj Mahal'},
-        {id:'colosseum', label:'Colosseum'},
-        {id:'machu', label:'Machu Picchu'},
-        {id:'angkor', label:'Angkor Wat'},
-        {id:'petra', label:'Petra'},
-        {id:'christ', label:'Christ the Redeemer'},
-        {id:'greatwall', label:'Great Wall of China'},
-        {id:'stonehenge', label:'Stonehenge'},
-        {id:'moai', label:'Moai (Easter Island)'},
-        {id:'chichen', label:'Chichen Itza'},
+        {id:'taj', label:'Taj Mahal'}, {id:'colosseum', label:'Colosseum'},
+        {id:'machu', label:'Machu Picchu'}, {id:'angkor', label:'Angkor Wat'},
+        {id:'petra', label:'Petra'}, {id:'christ', label:'Christ the Redeemer'},
+        {id:'greatwall', label:'Great Wall of China'}, {id:'stonehenge', label:'Stonehenge'},
+        {id:'moai', label:'Moai (Easter Island)'}, {id:'chichen', label:'Chichen Itza'},
       ],
       rightBank:[
-        {id:'taj', img:'landmark1.png'},
-        {id:'colosseum', img:'landmark2.png'},
-        {id:'machu', img:'landmark3.png'},
-        {id:'angkor', img:'landmark4.png'},
-        {id:'petra', img:'landmark5.png'},
-        {id:'christ', img:'landmark6.png'},
-        {id:'greatwall', img:'landmark7.png'},
-        {id:'stonehenge', img:'landmark8.png'},
-        {id:'moai', img:'landmark9.png'},
-        {id:'chichen', img:'landmark10.png'},
+        {id:'taj', img:'landmark1.jpeg'}, {id:'colosseum', img:'landmark2.jpeg'},
+        {id:'machu', img:'landmark3.jpeg'}, {id:'angkor', img:'landmark4.jpeg'},
+        {id:'petra', img:'landmark5.jpeg'}, {id:'christ', img:'landmark6.jpeg'},
+        {id:'greatwall', img:'landmark7.jpeg'}, {id:'stonehenge', img:'landmark8.jpeg'},
+        {id:'moai', img:'landmark9.jpeg'}, {id:'chichen', img:'landmark10.jpeg'},
       ]
     },
     {
@@ -221,6 +188,111 @@ const PUZZLES = {
         {name:'Ludwig van Beethoven', field:'classical'},
         {name:'Johannes Brahms', field:'romantic'},
         {name:'Johann Pachelbel', field:'baroque'},
+      ]
+    },
+  ],
+
+  /* ==========================================================
+     2026-02-20 — Same Consonants / Butterflies / Boy Names / Super Bowl
+     ========================================================== */
+  '2026-02-20': [
+    {
+      key:'orange', color:'var(--orange)', name:'Same Consonants',
+      desc:'Find the word built from the same consonants.',
+      type:'fill',
+      thresholds:[3,6,9], total:10,
+      instructions:'Every clue word has a partner word that uses the exact same set of consonants (ignoring order and repeats). Type the partner.',
+      items:[
+        {clue:'pronounce',   answers:['capricorn']},
+        {clue:'elephant',    answers:['telephone']},
+        {clue:'transport',   answers:['protons']},
+        {clue:'uniform',     answers:['ferment']},
+        {clue:'quarter',     answers:['torque']},
+        {clue:'obscure',     answers:['scribe']},
+        {clue:'conservative',answers:['conversation']},
+        {clue:'identification', answers:['confident']},
+        {clue:'error',       answers:['rare']},
+        {clue:'debate',      answers:['bidet']},
+      ]
+    },
+    {
+      key:'green', color:'var(--green)', name:'Butterflies',
+      desc:'Match each butterfly to its photo.',
+      type:'cross-match',
+      thresholds:[3,6,9], total:10,
+      instructions:'Tap a butterfly name, then tap the photo that shows it. Tap either again to deselect before it locks in.',
+      connector:'=', leftLabel:'Butterfly', rightLabel:'Photo', rightIsImage:true,
+      leftBank:[
+        {id:'b1', label:'Mourning cloak'},
+        {id:'b2', label:'Banded owl-butterfly'},
+        {id:'b3', label:'Balkan Marbled White'},
+        {id:'b4', label:'Small Wood-nymph'},
+        {id:'b5', label:'Three-banded Crescent'},
+        {id:'b6', label:'American Snout Butterfly'},
+        {id:'b7', label:'Illinissa Glasswing'},
+        {id:'b8', label:'Tiger Longwing'},
+        {id:'b9', label:'Widespread Eighty-eight'},
+        {id:'b10', label:'Sara Longwing Butterfly'},
+      ],
+      rightBank:[
+        {id:'b7',  img:'Butterfly7.png'},
+        {id:'b2',  img:'Butterfly2.png'},
+        {id:'b9',  img:'Butterfly9.png'},
+        {id:'b4',  img:'Butterfly4.png'},
+        {id:'b1',  img:'Butterfly1.png'},
+        {id:'b10', img:'Butterfly10.png'},
+        {id:'b6',  img:'Butterfly6.png'},
+        {id:'b3',  img:'Butterfly3.png'},
+        {id:'b8',  img:'Butterfly8.png'},
+        {id:'b5',  img:'Butterfly5.png'},
+      ]
+    },
+    {
+      key:'blue', color:'var(--blue)', name:'Top Boy Names, 2003',
+      desc:'Type each country\u2019s top 3 boy names from 2003.',
+      type:'fill',
+      thresholds:[3,6,9], total:10,
+      instructions:'For each country, type any one of its top 3 boy names from 2003. Any of the three counts.',
+      items:[
+        {clue:'United States', answers:['jacob','michael','joshua']},
+        {clue:'Argentina',     answers:['juan','carlos','jorge']},
+        {clue:'Brazil',        answers:['jo\u00e3o','joao','gabriel','pedro']},
+        {clue:'Turkey',        answers:['mehmet','yusuf','furkan']},
+        {clue:'India',         answers:['karna','surya','rama']},
+        {clue:'Australia',     answers:['jack','lachlan','william']},
+        {clue:'Germany',       answers:['alexander','maximillian','leon']},
+        {clue:'Ireland',       answers:['sean','jack','conor']},
+        {clue:'France',        answers:['lucas','th\u00e9o','theo','thomas']},
+        {clue:'Poland',        answers:['jan','andrzej','piotr']},
+      ]
+    },
+    {
+      key:'purple', color:'var(--purple)', name:'Super Bowl Winners',
+      desc:'Name every NFL franchise that has won a Super Bowl.',
+      type:'list-fill',
+      thresholds:[4,10,18], total:20,
+      instructions:'Type any NFL team that has won a Super Bowl. Each franchise that has never won costs you a life. 3 wrong guesses ends the puzzle.',
+      items:[
+        {name:'Cowboys',    hint:'NFC East',  aliases:['dallas cowboys','dallas']},
+        {name:'Steelers',   hint:'AFC North', aliases:['pittsburgh steelers','pittsburgh']},
+        {name:'Patriots',   hint:'AFC East',  aliases:['new england patriots','new england','pats']},
+        {name:'49ers',      hint:'NFC West',  aliases:['san francisco 49ers','san francisco','niners','forty niners']},
+        {name:'Packers',    hint:'NFC North', aliases:['green bay packers','green bay']},
+        {name:'Giants',     hint:'NFC East',  aliases:['new york giants','ny giants']},
+        {name:'Chiefs',     hint:'AFC West',  aliases:['kansas city chiefs','kansas city','kc']},
+        {name:'Broncos',    hint:'AFC West',  aliases:['denver broncos','denver']},
+        {name:'Raiders',    hint:'AFC West',  aliases:['las vegas raiders','las vegas','oakland raiders','oakland','vegas']},
+        {name:'Commanders', hint:'NFC East',  aliases:['washington commanders','washington','redskins','washington redskins']},
+        {name:'Dolphins',   hint:'AFC East',  aliases:['miami dolphins','miami']},
+        {name:'Colts',      hint:'AFC South', aliases:['indianapolis colts','indianapolis','indy']},
+        {name:'Buccaneers', hint:'NFC South', aliases:['tampa bay buccaneers','tampa bay','tampa','bucs']},
+        {name:'Eagles',     hint:'NFC East',  aliases:['philadelphia eagles','philadelphia','philly']},
+        {name:'Rams',       hint:'NFC West',  aliases:['los angeles rams','la rams','los angeles','st louis rams','st louis']},
+        {name:'Bears',      hint:'NFC North', aliases:['chicago bears','chicago']},
+        {name:'Saints',     hint:'NFC South', aliases:['new orleans saints','new orleans']},
+        {name:'Seahawks',   hint:'NFC West',  aliases:['seattle seahawks','seattle']},
+        {name:'Ravens',     hint:'AFC North', aliases:['baltimore ravens','baltimore']},
+        {name:'Jets',       hint:'AFC East',  aliases:['new york jets','ny jets']},
       ]
     },
   ],
