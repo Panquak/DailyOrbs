@@ -198,7 +198,7 @@ const PUZZLES = {
   '2026-02-20': [
         {
       key:'orange', color:'var(--orange)', name:'Same Consonants',
-      desc:'Find a word that shares the same consonants as its clue.',
+      desc:'Each pair of clues has two answers that share the same consonants.\n\nA consonant can appear more times in one word than the other, but every consonant in the pair appears at least once in each word.\n\nType just one of the two answers \u2014 either one will solve the pair.\n\nExample:\nQ1: thrilling amusement park ride\nQ2: dense group of something\n\nAnswers:\nrollercoaster\ncluster',
       type:'pair-fill',
       thresholds:[3,6,9], total:10,
       instructions:'Each clue leads to a word built from the same consonants as its partner (ignoring order and repeats). Type either word to solve the pair.',
