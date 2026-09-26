@@ -101,6 +101,10 @@
   .fill-submit:hover{ border-color:var(--accent); }
   .fill-submit:disabled{ opacity:0.4; cursor:default; }
 
+  .pf-clues{ margin-bottom:10px; }
+  .pf-clue-text{ font-size:18px; line-height:1.5; color:var(--text); }
+  .pf-clue-text + .pf-clue-text{ color:var(--text-dim); margin-top:2px; }
+
   .inline-orbs{ display:inline-flex; gap:6px; vertical-align:middle; }
   .inline-orbs .dot{ width:24px; height:24px; border-radius:50%; border:2.5px solid var(--accent); box-sizing:border-box; }
 
@@ -197,7 +201,6 @@
   .reveal-btn:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
   .reveal-btn:disabled{ opacity:0.5; cursor:default; }
 
-  /* ---- LIST FILL ---- */
   .lf-grid{
     display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px;
   }
@@ -359,7 +362,6 @@ function getCatData(key){
   return c.data;
 }
 
-/* ============ NAVIGATION ============ */
 function loadPuzzle(date){
   CURRENT_DATE = date;
   PUZ = ensureState(date);
@@ -394,7 +396,6 @@ function updateNav(){
   document.getElementById('navToday').style.display = (CURRENT_DATE !== todayDefault) ? 'inline-block' : 'none';
 }
 
-/* ============ EVENT LOGGING ============ */
 function logOrb(catKey){
   PUZ.eventLog.push(ORB_EMOJI[catKey]);
   PUZ.orbOrder.push(catKey);
@@ -426,7 +427,6 @@ function dismissVictory(){
   saveStored();
 }
 
-/* ============ SHARE ============ */
 function updateShareButton(){
   const btn = document.getElementById('shareBtn');
   if (btn) btn.disabled = !PUZ || PUZ.eventLog.length === 0;
@@ -448,7 +448,6 @@ function shareResults(){
   } else { prompt('Copy your results:', text); }
 }
 
-/* ============ RENDERING HELPERS ============ */
 function dotFill(correct, start, end, color){
   if(correct >= end) return color;
   if(correct > start){
@@ -504,7 +503,6 @@ function badgeHTML(catKey){
     '</div>';
 }
 
-/* ============ HUB ============ */
 function renderHub(){
   document.getElementById('hubDate').textContent = new Date(CURRENT_DATE + 'T12:00:00')
     .toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric', year:'numeric'});
@@ -523,7 +521,6 @@ function renderHub(){
   }).join('');
 }
 
-/* ============ SCORING ============ */
 function registerCorrect(catKey, n){
   n = n || 1;
   const c = CURRENT_CATS.find(x => x.key === catKey);
@@ -555,7 +552,6 @@ function refreshTopBadge(catKey){
   if (el) el.innerHTML = badgeHTML(catKey);
 }
 
-/* ============ OVERLAY SHELL ============ */
 function openGame(key){
   let el = document.getElementById('overlay-' + key);
   if (!el){
@@ -594,6 +590,7 @@ function buildGame(key, el){
   el.innerHTML = shellHTML(c);
   const body = document.getElementById('gamebody-' + key);
   if (c.type === 'fill') buildFill(c, body);
+  if (c.type === 'pair-fill') buildPairFill(c, body);
   if (c.type === 'cross-match') buildCrossMatch(c, body);
   if (c.type === 'categorize') buildCategorize(c, body);
   if (c.type === 'list-fill') buildListFill(c, body);
@@ -654,6 +651,107 @@ function buildFill(c, body){
       const row = document.getElementById('fillrow-' + c.key + '-' + i);
       const val = input.value.trim().toLowerCase().replace(/\s+/g, '');
       const ok = item.answers.some(a => a.toLowerCase().replace(/\s+/g, '') === val);
+      const wasDead = PUZ.cats[c.key].dead;
+      const prevCorrect = PUZ.cats[c.key].correct;
+      if (ok){
+        solvedSet.add(i);
+        d.gains[i] = prevCorrect;
+        row.classList.add('correct');
+        input.disabled = true;
+        row.querySelector('.fill-submit').disabled = true;
+        registerCorrect(c.key, 1);
+        refreshTopBadge(c.key);
+        if (!wasDead){
+          row.querySelector('.inline-orbs').innerHTML =
+            dotsHTMLWithNewFill(PUZ.cats[c.key].correct, c.thresholds, c.color, prevCorrect);
+        }
+        persist();
+      } else {
+        row.classList.add('wrongflash');
+        registerWrong(c.key);
+        refreshTopBadge(c.key);
+        setTimeout(()=> row.classList.remove('wrongflash'), 400);
+      }
+    },
+    reveal(){
+      if (d.done) return;
+      d.done = true;
+      c.items.forEach((item, i)=>{ if (!solvedSet.has(i)) revealedSet.add(i); });
+      persist(); saveStored(); render();
+    }
+  };
+  render();
+}
+
+/* ============ PAIR FILL ============ */
+function buildPairFill(c, body){
+  const d = getCatData(c.key);
+  if (!d.solved) d.solved = [];
+  if (!d.revealed) d.revealed = [];
+  if (!d.gains) d.gains = {};
+  if (d.done === undefined) d.done = false;
+  const solvedSet = new Set(d.solved);
+  const revealedSet = new Set(d.revealed);
+
+  function normalize(s){
+    return s.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  function checkPair(input, answers){
+    const n = normalize(input);
+    if (!n) return false;
+    for (const a of answers){
+      if (!n.includes(normalize(a))) return false;
+    }
+    return true;
+  }
+
+  function persist(){
+    d.solved = Array.from(solvedSet);
+    d.revealed = Array.from(revealedSet);
+  }
+
+  function render(){
+    let html = c.items.map((item, i)=>{
+      const isCorrect = solvedSet.has(i);
+      const isRevealed = revealedSet.has(i);
+      const cls = isCorrect ? 'correct' : (isRevealed ? 'revealed' : '');
+      const val = isRevealed ? item.answers.join(' \u00b7 ') : '';
+      const disabled = isCorrect || isRevealed || d.done;
+      let orbDisplay = '';
+      if (isCorrect && d.gains[i] !== undefined){
+        orbDisplay = dotsHTMLWithNewFill(PUZ.cats[c.key].correct, c.thresholds, c.color, d.gains[i]);
+      }
+      const cluesHTML = item.clues.map(t => '<div class="pf-clue-text">' + t + '</div>').join('');
+      return '<div class="fill-row ' + cls + '" id="pfrow-' + c.key + '-' + i + '">' +
+        '<div class="fill-clue" style="display:block;">' +
+          '<div class="pf-clues">' + cluesHTML + '</div>' +
+          '<div class="inline-orbs">' + orbDisplay + '</div>' +
+        '</div>' +
+        '<div class="fill-input-line">' +
+          '<input type="text" id="pfinput-' + c.key + '-' + i + '" autocomplete="off" placeholder="Both words, separated by a space" value="' + val + '" ' + (disabled ? 'disabled' : '') + '>' +
+          '<button class="fill-submit" onclick="window.__pf_' + c.key + '.submit(' + i + ')" ' + (disabled ? 'disabled' : '') + '>&#8629;</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    html += '<button class="reveal-btn" onclick="window.__pf_' + c.key + '.reveal()" ' + (d.done ? 'disabled' : '') + '>' + (d.done ? 'Answers Revealed' : 'Reveal Answers') + '</button>';
+    body.innerHTML = html;
+    c.items.forEach((item, i)=>{
+      const input = document.getElementById('pfinput-' + c.key + '-' + i);
+      if (input && !input.disabled){
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') window['__pf_' + c.key].submit(i); });
+      }
+    });
+  }
+
+  gameRerender[c.key] = render;
+
+  window['__pf_' + c.key] = {
+    submit(i){
+      if (solvedSet.has(i) || revealedSet.has(i) || d.done) return;
+      const item = c.items[i];
+      const input = document.getElementById('pfinput-' + c.key + '-' + i);
+      const row = document.getElementById('pfrow-' + c.key + '-' + i);
+      const ok = checkPair(input.value, item.answers);
       const wasDead = PUZ.cats[c.key].dead;
       const prevCorrect = PUZ.cats[c.key].correct;
       if (ok){
@@ -1045,7 +1143,6 @@ function buildListFill(c, body){
   render();
 }
 
-/* ============ BOOT ============ */
 (function boot(){
   const hash = location.hash.replace('#','');
   const dates = puzzleDates();
